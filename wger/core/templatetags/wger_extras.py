@@ -204,6 +204,7 @@ def format_username(user):
 
 
 class SpacelessNode(template.base.Node):
+
     def __init__(self, nodelist):
         self.nodelist = nodelist
 
