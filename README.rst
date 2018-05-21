@@ -63,7 +63,7 @@ Then install the python packages from pypi in the virtualenv::
 
 ::
 
- $ git clone https://github.com/wger-project/wger.git
+ $ git clone https://github.com/andela/wger-bulls.git
  $ cd wger
  $ pip install -r requirements.txt  # or requirements_devel.txt to develop
  $ invoke create_settings \
