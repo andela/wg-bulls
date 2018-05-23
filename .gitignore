@@ -62,9 +62,6 @@ target/
 # External Libraries 
 wger/core/static/bower_components
 node_modules
-<<<<<<< HEAD
-# Virtualenv folder
-=======
 
 #Virtualenv folder
 >>>>>>> e8bf7bcdf9c3d3f11c495afca494f594b46528a5
