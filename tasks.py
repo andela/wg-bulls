@@ -87,7 +87,8 @@ def bootstrap_wger(context,
     if settings_path is None:
         settings_path = get_user_config_path('wger', 'settings.py')
     if not os.path.exists(settings_path):
-        create_settings(context, settings_path=settings_path, database_path=database_path, url=url)
+        create_settings(context, settings_path=settings_path,
+                        database_path=database_path, url=url)
 
     # Find the path to the settings and setup the django environment
     setup_django_environment(settings_path)
@@ -108,7 +109,8 @@ def bootstrap_wger(context,
     # Start the webserver
     if start_server:
         print('*** Bootstraping complete, starting application')
-        start_wger(address=address, port=port, browser=browser, settings_path=settings_path)
+        start_wger(address=address, port=port, browser=browser,
+                   settings_path=settings_path)
 
 
 @task(help={'settings-path': 'Path to settings file (absolute path recommended). Leave empty for default',
@@ -136,7 +138,8 @@ def create_settings(context, settings_path=None, database_path=None, url=None, d
         url = 'http://localhost:8000'
 
     # Fill in the config file template
-    settings_template = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'wger', 'settings.tpl')
+    settings_template = os.path.join(os.path.dirname(
+        os.path.abspath(__file__)), 'wger', 'settings.tpl')
     with open(settings_template, 'r') as settings_file:
         settings_content = settings_file.read()
 
@@ -158,7 +161,8 @@ def create_settings(context, settings_path=None, database_path=None, url=None, d
 
     # Create a random SECRET_KEY to put it in the settings.
     # from django.core.management.commands.startproject
-    secret_key = get_random_string(key_length, 'abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)')
+    secret_key = get_random_string(
+        key_length, 'abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)')
 
     settings_content = settings_content.format(dbname=dbname,
                                                dbpath=dbpath_value,
@@ -280,9 +284,11 @@ def config_location(context):
     Returns the default location for the settings file and the data folder
     '''
     print('Default locations:')
-    print('* settings:      {0}'.format(get_user_config_path('wger', 'settings.py')))
+    print(
+        '* settings:      {0}'.format(get_user_config_path('wger', 'settings.py')))
     print('* media folder:  {0}'.format(get_user_data_path('wger', 'media')))
-    print('* database path: {0}'.format(get_user_data_path('wger', 'database.sqlite')))
+    print(
+        '* database path: {0}'.format(get_user_data_path('wger', 'database.sqlite')))
 
 
 #
