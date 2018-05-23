@@ -530,7 +530,7 @@ class Day(models.Model):
         return {'obj': self,
                 'days_of_week': {
                     'text': u', '.join([six.text_type(_(i.day_of_week))
-                                       for i in tmp_days_of_week]),
+                                        for i in tmp_days_of_week]),
                     'day_list': tmp_days_of_week},
                 'muscles': {
                     'back': muscles_back,

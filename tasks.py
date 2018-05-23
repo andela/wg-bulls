@@ -35,7 +35,8 @@ from django.core.management import (
 logger = logging.getLogger(__name__)
 
 
-@task(help={'address': 'Address to bind to. Default: localhost',
+@task(help={
+    'address': 'Address to bind to. Default: localhost',
             'port': 'Port to use. Default: 8000',
             'browser': 'Whether to open the application in a browser window. Default: false',
             'settings-path': 'Path to settings file (absolute path recommended). Leave empty for default',
@@ -226,7 +227,6 @@ def load_fixtures(context, settings_path=None):
 
     # Find the path to the settings and setup the django environment
     setup_django_environment(settings_path)
-
 
     # os.chdir(os.path.dirname(inspect.stack()[0][1]))
     # current_dir = os.path.join(os.getcwd(), 'wger')

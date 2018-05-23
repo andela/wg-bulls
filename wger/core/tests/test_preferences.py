@@ -195,6 +195,7 @@ class PreferencesCalculationsTestCase(WorkoutManagerTestCase):
     '''
     Tests the different calculation method in the user profile
     '''
+
     def test_last_weight_entry(self):
         '''
         Tests that the last weight entry is correctly returned

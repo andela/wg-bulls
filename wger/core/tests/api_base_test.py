@@ -99,6 +99,7 @@ class ApiGetTestCase(object):
     '''
     Base test case for testing GET access to the API
     '''
+
     def test_ordering(self):
         '''
         Test that ordering the resource works

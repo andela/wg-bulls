@@ -115,7 +115,7 @@ def create(request, day_pk):
                     instance.save()
 
             return HttpResponseRedirect(reverse('manager:workout:view',
-                                        kwargs={'pk': day.get_owner_object().id}))
+                                                kwargs={'pk': day.get_owner_object().id}))
         else:
             logger.debug(form.errors)
 
@@ -217,7 +217,7 @@ def edit(request, pk):
                         instance.save()
 
             return HttpResponseRedirect(reverse('manager:workout:view',
-                                        kwargs={'pk': set_obj.get_owner_object().id}))
+                                                kwargs={'pk': set_obj.get_owner_object().id}))
 
     # Other context we need
     context = {}

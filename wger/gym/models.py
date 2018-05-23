@@ -128,10 +128,10 @@ class GymConfig(m.Model):
     Gym this configuration belongs to
     '''
 
-    weeks_inactive = m.PositiveIntegerField(verbose_name=_('Reminder of inactive members'),
-                                            help_text=_('Number of weeks since the last time a '
-                                            'user logged his presence to be considered inactive'),
-                                            default=4)
+    weeks_inactive = m.PositiveIntegerField(
+        verbose_name=_('Reminder of inactive members'), help_text=_(
+            'Number of weeks since the last time a '
+            'user logged his presence to be considered inactive'), default=4)
     '''
     Reminder of inactive members
     '''
@@ -208,7 +208,7 @@ class GymUserConfig(AbstractGymUserConfigModel, m.Model):
 
     include_inactive = m.BooleanField(verbose_name=_('Include in inactive overview'),
                                       help_text=_('Include this user in the email list with '
-                                      'inactive members'),
+                                                  'inactive members'),
                                       default=True)
     '''
     Include user in inactive overview

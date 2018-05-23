@@ -254,7 +254,7 @@ class TestSetAddFormset(WorkoutManagerTestCase):
         '''
         exercise = Exercise.objects.get(pk=1)
         response = self.client.get(reverse('manager:set:get-formset',
-                                   kwargs={'exercise_pk': 1, 'reps': 4}))
+                                           kwargs={'exercise_pk': 1, 'reps': 4}))
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context['exercise'], exercise)
