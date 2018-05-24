@@ -193,7 +193,7 @@ def trainer_login(request, user_pk):
     else:
         return HttpResponseRedirect(
             reverse('gym:gym:user-list',
-                                            kwargs={'pk': user.userprofile.gym_id}))
+                    kwargs={'pk': user.userprofile.gym_id}))
 
 
 def logout(request):
@@ -220,15 +220,19 @@ def registration(request):
     template_data.update(csrf(request))
 
     # Don't use captcha when registering through an app
-    is_app = check_request_amazon(request) or check_request_android(request)
-    FormClass = RegistrationFormNoCaptcha if is_app else RegistrationForm
+    is_app = check_request_amazon(
+        request) or check_request_android(request)
+    FormClass = RegistrationFormNoCaptcha if \
+        is_app else RegistrationForm
 
     # Don't show captcha if the global parameter is false
     if not settings.WGER_SETTINGS['USE_RECAPTCHA']:
         FormClass = RegistrationFormNoCaptcha
 
-    # Redirect regular users, in case they reached the registration page
-    if request.user.is_authenticated() and not request.user.userprofile.is_temporary:
+    # Redirect regular users, in case they
+    # reached the registration page
+    if request.user.is_authenticated() and\
+            not request.user.userprofile.is_temporary:
         return HttpResponseRedirect(reverse('core:dashboard'))
 
     if request.method == 'POST':
@@ -264,7 +268,8 @@ def registration(request):
 
             user = authenticate(username=username, password=password)
             django_login(request, user)
-            messages.success(request, _('You were successfully registered'))
+            messages.success(
+                request, _('You were successfully registered'))
             return HttpResponseRedirect(reverse('core:dashboard'))
     else:
         form = FormClass()
@@ -300,7 +305,8 @@ def preferences(request):
             form.save()
             redirect = True
     else:
-        form = UserPreferencesForm(instance=request.user.userprofile)
+        form = UserPreferencesForm(
+            instance=request.user.userprofile)
 
     # Process the email form
     if request.method == 'POST':
@@ -313,16 +319,19 @@ def preferences(request):
         else:
             redirect = False
     else:
-        email_form = UserPersonalInformationForm(instance=request.user)
+        email_form = UserPersonalInformationForm(
+            instance=request.user)
 
     template_data['form'] = form
     template_data['email_form'] = email_form
 
     if redirect:
-        messages.success(request, _('Settings successfully updated'))
+        messages.success(
+            request, _('Settings successfully updated'))
         return HttpResponseRedirect(reverse('core:user:preferences'))
     else:
-        return render(request, 'user/preferences.html', template_data)
+        return render(
+            request, 'user/preferences.html', template_data)
 
 
 class UserDeactivateView(LoginRequiredMixin,
@@ -345,11 +354,15 @@ class UserDeactivateView(LoginRequiredMixin,
         if not request.user.is_authenticated():
             return HttpResponseForbidden()
 
-        if (request.user.has_perm('gym.manage_gym') or request.user.has_perm('gym.gym_trainer')) \
-                and edit_user.userprofile.gym_id != request.user.userprofile.gym_id:
+        if (
+            request.user.has_perm('gym.manage_gym') or
+            request.user.has_perm('gym.gym_trainer')) \
+                and edit_user.userprofile.gym_id != request.\
+                user.userprofile.gym_id:
             return HttpResponseForbidden()
 
-        return super(UserDeactivateView, self).dispatch(request, *args, **kwargs)
+        return super(UserDeactivateView, self).\
+            dispatch(request, *args, **kwargs)
 
     def get_redirect_url(self, pk):
         edit_user = get_object_or_404(User, pk=pk)
@@ -380,11 +393,14 @@ class UserActivateView(LoginRequiredMixin,
         if not request.user.is_authenticated():
             return HttpResponseForbidden()
 
-        if (request.user.has_perm('gym.manage_gym') or request.user.has_perm('gym.gym_trainer')) \
-                and edit_user.userprofile.gym_id != request.user.userprofile.gym_id:
+        if (request.user.has_perm('gym.manage_gym') or
+            request.user.has_perm('gym.gym_trainer')) \
+                and edit_user.userprofile.gym_id != \
+                request.user.userprofile.gym_id:
             return HttpResponseForbidden()
 
-        return super(UserActivateView, self).dispatch(request, *args, **kwargs)
+        return super(UserActivateView, self).\
+            dispatch(request, *args, **kwargs)
 
     def get_redirect_url(self, pk):
         edit_user = get_object_or_404(User, pk=pk)
@@ -421,19 +437,23 @@ class UserEditView(WgerFormMixin,
 
         if user.has_perm('gym.manage_gym') \
                 and not user.has_perm('gym.manage_gyms') \
-                and user.userprofile.gym != self.get_object().userprofile.gym:
+                and user.userprofile.gym != \
+                self.get_object().userprofile.gym:
             return HttpResponseForbidden()
 
-        return super(UserEditView, self).dispatch(request, *args, **kwargs)
+        return super(UserEditView, self).\
+            dispatch(request, *args, **kwargs)
 
     def get_success_url(self):
-        return reverse('core:user:overview', kwargs={'pk': self.kwargs['pk']})
+        return reverse('core:user:overview',
+                       kwargs={'pk': self.kwargs['pk']})
 
     def get_context_data(self, **kwargs):
         '''
         Send some additional data to the template
         '''
-        context = super(UserEditView, self).get_context_data(**kwargs)
+        context = super(UserEditView, self)\
+            .get_context_data(**kwargs)
         context['form_action'] = reverse(
             'core:user:edit', kwargs={'pk': self.object.id})
         context['title'] = _('Edit {0}'.format(self.object))
@@ -467,13 +487,15 @@ def api_key(request):
     return render(request, 'user/api_key.html', context)
 
 
-class UserDetailView(LoginRequiredMixin, WgerMultiplePermissionRequiredMixin, DetailView):
+class UserDetailView(LoginRequiredMixin,
+                     WgerMultiplePermissionRequiredMixin, DetailView):
     '''
     User overview for gyms
     '''
     model = User
     permission_required = (
-        'gym.manage_gym', 'gym.manage_gyms', 'gym.gym_trainer')
+        'gym.manage_gym', 'gym.manage_gyms',
+        'gym.gym_trainer')
     template_name = 'user/overview.html'
     context_object_name = 'current_user'
 
@@ -489,9 +511,11 @@ class UserDetailView(LoginRequiredMixin, WgerMultiplePermissionRequiredMixin, De
         if not user.is_authenticated():
             return HttpResponseForbidden()
 
-        if (user.has_perm('gym.manage_gym') or user.has_perm('gym.gym_trainer')) \
+        if (user.has_perm('gym.manage_gym') or
+            user.has_perm('gym.gym_trainer')) \
                 and not user.has_perm('gym.manage_gyms') \
-                and user.userprofile.gym != self.get_object().userprofile.gym:
+                and user.userprofile.gym != self.\
+                get_object().userprofile.gym:
             return HttpResponseForbidden()
 
         return super(UserDetailView, self).dispatch(request, *args, **kwargs)
@@ -509,15 +533,18 @@ class UserDetailView(LoginRequiredMixin, WgerMultiplePermissionRequiredMixin, De
                         'logs': logs.dates('date', 'day').count(),
                         'last_log': logs.last()})
         context['workouts'] = out
-        context['weight_entries'] = WeightEntry.objects.filter(user=self.object)\
+        context['weight_entries'] = WeightEntry.objects.filter(
+            user=self.object)\
             .order_by('-date')[:5]
-        context['nutrition_plans'] = NutritionPlan.objects.filter(user=self.object)\
+        context['nutrition_plans'] = NutritionPlan.objects.filter(
+            user=self.object)\
             .order_by('-creation_date')[:5]
         context['session'] = WorkoutSession.objects.filter(
             user=self.object).order_by('-date')[:10]
-        context['admin_notes'] = AdminUserNote.objects.filter(member=self.object)[
-            :5]
-        context['contracts'] = Contract.objects.filter(member=self.object)[:5]
+        context['admin_notes'] = AdminUserNote.objects.filter(
+            member=self.object)[:5]
+        context['contracts'] = Contract.objects.filter(
+            member=self.object)[:5]
         return context
 
 
@@ -536,7 +563,8 @@ class UserListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
         out = {'admins': [],
                'members': []}
 
-        for u in User.objects.select_related('usercache', 'userprofile__gym').all():
+        for u in User.objects.select_related(
+                'usercache', 'userprofile__gym').all():
             out['members'].append({'obj': u,
                                    'last_log': u.usercache.last_activity})
 
