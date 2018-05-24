@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU Affero General Public License
 
 from wger.gym.helpers import get_user_last_activity
-from wger.manager.models import WorkoutLog, WorkoutSession
+
 
 
 def update_activity_cache(sender, instance, **kwargs):
