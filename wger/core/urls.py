@@ -116,8 +116,7 @@ patterns_user = [
         {'template_name': 'user/password_reset_done.html'},
         name='password_reset_done'),
     url(
-        r'^password/reset/check/(?P<uidb64>[0-9A-Za-z_\-]+)/(\
-        ?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})$',
+        r'^password/reset/check/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})$',
         views.password_reset_confirm,
         {'template_name': 'user/password_reset_confirm.html',
          'post_reset_redirect': reverse_lazy(
