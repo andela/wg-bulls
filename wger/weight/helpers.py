@@ -56,8 +56,9 @@ def parse_weight_csv(request, cleaned_data):
             parsed_date = datetime.datetime.strptime(
                 row[0], cleaned_data['date_format'])
             parsed_weight = decimal.Decimal(row[1].replace(',', '.'))
-            duplicate_date_in_db = WeightEntry.objects.filter(date=parsed_date,
-                                                              user=request.user).exists()
+            duplicate_date_in_db = WeightEntry.objects.filter(
+                date=parsed_date,
+                user=request.user).exists()
             # within the list there are no duplicate dates
             unique_among_csv = parsed_date not in entry_dates
 
@@ -102,8 +103,8 @@ def group_log_entries(user, year, month, day=None):
     else:
         log_hash = hash((user.pk, year, month))
 
-    # There can be workout sessions without any associated log entries, so it is
-    # not enough so simply iterate through the logs
+    # There can be workout sessions without any associated log entries,
+    # so it is not enough so simply iterate through the logs
     if day:
         filter_date = datetime.date(year, month, day)
         logs = WorkoutLog.objects.filter(user=user, date=filter_date)
@@ -188,10 +189,12 @@ def process_log_entries(logs):
         # Only add if weight is the maximum for the day
         if entry.weight != max_weight[entry.date][entry.reps]:
             continue
-        if (entry.date, entry.reps, entry.weight) in entry_list[entry.reps]['seen']:
+        if (entry.date, entry.reps, entry.weight) in \
+                entry_list[entry.reps]['seen']:
             continue
 
-        entry_list[entry.reps]['seen'].append((entry.date, entry.reps, entry.weight))
+        entry_list[entry.reps]['seen'].append(
+            (entry.date, entry.reps, entry.weight))
         entry_list[entry.reps]['list'].append({'date': entry.date,
                                                'weight': entry.weight,
                                                'reps': entry.reps})
