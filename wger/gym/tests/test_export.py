@@ -29,7 +29,8 @@ class GymMembersCsvExportTestCase(WorkoutManagerTestCase):
         '''
         Helper function to test the CSV export
         '''
-        response = self.client.get(reverse('gym:export:users', kwargs={'gym_pk': 1}))
+        response = self.client.get(
+            reverse('gym:export:users', kwargs={'gym_pk': 1}))
         gym = Gym.objects.get(pk=1)
 
         if fail:
@@ -41,8 +42,9 @@ class GymMembersCsvExportTestCase(WorkoutManagerTestCase):
             today = datetime.date.today()
             filename = 'User-data-gym-{gym}-{t.year}-{t.month:02d}-{t.day:02d}.csv'.\
                 format(t=today, gym=gym.id)
-            self.assertEqual(response['Content-Disposition'],
-                             'attachment; filename={0}'.format(filename))
+            self.assertEqual(
+                response['Content-Disposition'],
+                'attachment; filename={0}'.format(filename))
             self.assertGreaterEqual(len(response.content), 1000)
             self.assertLessEqual(len(response.content), 1300)
 
