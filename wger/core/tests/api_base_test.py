@@ -75,7 +75,8 @@ class ApiBaseTestCase(APITestCase):
         '''
         Return the URL to use for testing
         '''
-        return '/api/{0}/{1}/'.format(self.api_version, self.get_resource_name())
+        return '/api/{0}/{1}/'.format(
+            self.api_version, self.get_resource_name())
 
     @property
     def url_detail(self):
@@ -314,8 +315,9 @@ class ApiPatchTestCase(object):
             # Different logged in user
             self.get_credentials(self.user_fail)
             response = self.client.patch(self.url_detail, data=self.data)
-            self.assertIn(response.status_code,
-                          (status.HTTP_403_FORBIDDEN, status.HTTP_404_NOT_FOUND))
+            self.assertIn(
+                response.status_code,
+                (status.HTTP_403_FORBIDDEN, status.HTTP_404_NOT_FOUND))
         else:
             # Anonymous user
             response = self.client.patch(self.url_detail, data=self.data)

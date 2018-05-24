@@ -22,7 +22,8 @@ from django.template.context_processors import csrf
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _, ugettext_lazy
 from django.utils import translation
-from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
+from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import authenticate
 from django.contrib.auth import login as django_login
 from django.contrib.auth import logout as django_logout
@@ -40,8 +41,10 @@ from django.conf import settings
 from rest_framework.authtoken.models import Token
 
 from wger.utils.constants import USER_TAB
-from wger.utils.generic_views import WgerFormMixin, WgerMultiplePermissionRequiredMixin
-from wger.utils.user_agents import check_request_amazon, check_request_android
+from wger.utils.generic_views import WgerFormMixin
+from wger.utils.generic_views import WgerMultiplePermissionRequiredMixin
+from wger.utils.user_agents import check_request_amazon
+from wger.utils.user_agents import check_request_android
 from wger.core.forms import (
     UserPreferencesForm,
     UserPersonalInformationForm,
@@ -85,24 +88,29 @@ def login(request):
 @login_required()
 def delete(request, user_pk=None):
     '''
-    Delete a user account and all his data, requires password confirmation first
+    Delete a user account and all
+    his data, requires password confirmation first
 
-    If no user_pk is present, the user visiting the URL will be deleted, otherwise
+    If no user_pk is present, the user
+    visiting the URL will be deleted, otherwise
     a gym administrator is deleting a different user
     '''
 
     if user_pk:
         user = get_object_or_404(User, pk=user_pk)
-        form_action = reverse('core:user:delete', kwargs={'user_pk': user_pk})
+        form_action = reverse(
+            'core:user:delete', kwargs={'user_pk': user_pk})
 
         # Forbidden if the user has not enough rights, doesn't belong to the
         # gym or is an admin as well. General admins can delete all users.
-        if not request.user.has_perm('gym.manage_gyms') \
-                and (not request.user.has_perm('gym.manage_gym')
-                     or request.user.userprofile.gym_id != user.userprofile.gym_id
-                     or user.has_perm('gym.manage_gym')
-                     or user.has_perm('gym.gym_trainer')
-                     or user.has_perm('gym.manage_gyms')):
+        if not request.user.has_perm(
+                'gym.manage_gyms') \
+            and (
+            not request.user.has_perm('gym.manage_gym')
+                or request.user.userprofile.gym_id != user.userprofile.gym_id
+                or user.has_perm('gym.manage_gym')
+                or user.has_perm('gym.gym_trainer')
+                or user.has_perm('gym.manage_gyms')):
             return HttpResponseForbidden()
     else:
         user = request.user
@@ -111,19 +119,23 @@ def delete(request, user_pk=None):
     form = PasswordConfirmationForm(user=request.user)
 
     if request.method == 'POST':
-        form = PasswordConfirmationForm(data=request.POST, user=request.user)
+        form = PasswordConfirmationForm(
+            data=request.POST, user=request.user)
         if form.is_valid():
 
             user.delete()
-            messages.success(request,
-                             _('Account "{0}" was successfully deleted').format(user.username))
+            messages.success(
+                request,
+                _('Account "{0}" was successfully deleted').format(
+                    user.username))
 
             if not user_pk:
                 django_logout(request)
                 return HttpResponseRedirect(reverse('software:features'))
             else:
                 gym_pk = request.user.userprofile.gym_id
-                return HttpResponseRedirect(reverse('gym:gym:user-list', kwargs={'pk': gym_pk}))
+                return HttpResponseRedirect(
+                    reverse('gym:gym:user-list', kwargs={'pk': gym_pk}))
     context = {'form': form,
                'user_delete': user,
                'form_action': form_action}
@@ -162,7 +174,8 @@ def trainer_login(request, user_pk):
             or user.has_perm('gym.manage_gyms')):
         own = True
 
-    # Note: it seems we have to manually set the authentication backend here
+    # Note: it seems we have to manually set
+    # the authentication backend here
     # - https://docs.djangoproject.com/en/1.6/topics/auth/default/#auth-web-requests
     # - http://stackoverflow.com/questions/3807777/django-login-without-authenticating
     if own:
@@ -175,9 +188,11 @@ def trainer_login(request, user_pk):
         if request.GET.get('next'):
             return HttpResponseRedirect(request.GET['next'])
         else:
-            return HttpResponseRedirect(reverse('core:index'))
+            return HttpResponseRedirect(
+                reverse('core:index'))
     else:
-        return HttpResponseRedirect(reverse('gym:gym:user-list',
+        return HttpResponseRedirect(
+            reverse('gym:gym:user-list',
                                             kwargs={'pk': user.userprofile.gym_id}))
 
 

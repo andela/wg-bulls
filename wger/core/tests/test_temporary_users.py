@@ -160,14 +160,17 @@ class DemoUserTestCase(WorkoutManagerTestCase):
         self.user_login('demo')
         self.assertContains(self.client.get(
             reverse('core:dashboard')), demo_notice_text)
-        self.assertContains(self.client.get(reverse('manager:workout:overview')),
-                            demo_notice_text)
-        self.assertContains(self.client.get(reverse('exercise:exercise:overview')),
-                            demo_notice_text)
+        self.assertContains(
+            self.client.get(reverse('manager:workout:overview')),
+            demo_notice_text)
+        self.assertContains(self.client.get(
+            reverse('exercise:exercise:overview')),
+            demo_notice_text)
         self.assertContains(self.client.get(
             reverse('exercise:muscle:overview')), demo_notice_text)
-        self.assertContains(self.client.get(reverse('nutrition:plan:overview')),
-                            demo_notice_text)
+        self.assertContains(self.client.get(
+            reverse('nutrition:plan:overview')),
+            demo_notice_text)
         self.assertContains(self.client.get(
             reverse('software:issues')), demo_notice_text)
         self.assertContains(self.client.get(
