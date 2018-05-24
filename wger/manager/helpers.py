@@ -127,7 +127,8 @@ def render_workout_day(day, nr_of_weeks=7, images=False, comments=False,
                         image_size = 1.5
 
                     image = Image(exercise['obj'].main_image.image)
-                    image.drawHeight = image_size * cm * image.drawHeight / image.drawWidth
+                    image.drawHeight = image_size * \
+                        cm * image.drawHeight / image.drawWidth
                     image.drawWidth = image_size * cm
 
             # Put the name and images and comments together
@@ -177,8 +178,8 @@ def render_workout_day(day, nr_of_weeks=7, images=False, comments=False,
         table_style.append(('SPAN', (0, start_marker), (0, end_marker)))
 
     # Set an alternating background colour for rows with exercises.
-    # The rows with exercises range from exercise_start till the end of the data
-    # list
+    # The rows with exercises range from
+    # exercise_start till the end of the data list
     for i in range(exercise_start, len(data) + 1):
         if not i % 2:
             table_style.append(
@@ -363,11 +364,12 @@ class WorkoutCalendar(HTMLCalendar):
         url = reverse('manager:log:log', kwargs={'pk': entry['workout'].id})
         formatted_date = date_obj.strftime('%Y-%m-%d')
         body = []
-        body.append('<a href="{0}" '
-                    'data-log="log-{1}" '
-                    'class="btn btn-block {2} calendar-link">'.format(url,
-                                                                      formatted_date,
-                                                                      background_css))
+        body.append(
+            '<a href="{0}" '
+            'data-log="log-{1}" '
+            'class="btn btn-block {2} calendar-link">'.format(url,
+                                                              formatted_date,
+                                                              background_css))
         body.append(repr(day))
         body.append('</a>')
         return self.day_cell(cssclass, '{0}'.format(''.join(body)))
@@ -394,5 +396,6 @@ class WorkoutCalendar(HTMLCalendar):
         '''
         Renders a day cell
         '''
-        return '<td class="{0}" style="vertical-align: middle;">{1}</td>'.format(
+        return '<td class="{0}"',
+        'style="vertical-align: middle;">{1}</td>'.format(
             cssclass, body)
