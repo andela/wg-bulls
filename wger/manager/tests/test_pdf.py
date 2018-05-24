@@ -30,9 +30,13 @@ class WorkoutPdfLogExportTestCase(WorkoutManagerTestCase):
 
         user = User.objects.get(username='test')
         uid, token = make_token(user)
-        response = self.client.get(reverse('manager:workout:pdf-log', kwargs={'id': 3,
-                                                                              'uidb64': uid,
-                                                                              'token': token}))
+        response = self.client.get(
+            reverse(
+                'manager:workout:pdf-log',
+                kwargs={
+                    'id': 3,
+                    'uidb64': uid,
+                    'token': token}))
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response['Content-Type'], 'application/pdf')
@@ -45,14 +49,19 @@ class WorkoutPdfLogExportTestCase(WorkoutManagerTestCase):
 
     def export_pdf_token_wrong(self):
         '''
-        Helper function to test exporting a workout as a pdf using a wrong token
+        Helper function to test exporting a
+        workout as a pdf using a wrong token
         '''
 
         uid = 'AB'
         token = 'abc-11223344556677889900'
-        response = self.client.get(reverse('manager:workout:pdf-log', kwargs={'id': 3,
-                                                                              'uidb64': uid,
-                                                                              'token': token}))
+        response = self.client.get(
+            reverse(
+                'manager:workout:pdf-log',
+                kwargs={
+                    'id': 3,
+                    'uidb64': uid,
+                    'token': token}))
 
         self.assertEqual(response.status_code, 403)
 
@@ -61,7 +70,11 @@ class WorkoutPdfLogExportTestCase(WorkoutManagerTestCase):
         Helper function to test exporting a workout as a pdf
         '''
 
-        response = self.client.get(reverse('manager:workout:pdf-log', kwargs={'id': 3}))
+        response = self.client.get(
+            reverse(
+                'manager:workout:pdf-log',
+                kwargs={
+                    'id': 3}))
 
         if fail:
             self.assertIn(response.status_code, (403, 404, 302))
@@ -77,11 +90,16 @@ class WorkoutPdfLogExportTestCase(WorkoutManagerTestCase):
 
     def export_pdf_with_comments(self, fail=False):
         '''
-        Helper function to test exporting a workout as a pdf, with exercise coments
+        Helper function to test exporting a
+        workout as a pdf, with exercise coments
         '''
 
-        response = self.client.get(reverse('manager:workout:pdf-log', kwargs={'id': 3,
-                                                                              'comments': 0}))
+        response = self.client.get(
+            reverse(
+                'manager:workout:pdf-log',
+                kwargs={
+                    'id': 3,
+                    'comments': 0}))
 
         if fail:
             self.assertIn(response.status_code, (403, 404, 302))
@@ -97,11 +115,16 @@ class WorkoutPdfLogExportTestCase(WorkoutManagerTestCase):
 
     def export_pdf_with_images(self, fail=False):
         '''
-        Helper function to test exporting a workout as a pdf, with exercise images
+        Helper function to test exporting a
+        workout as a pdf, with exercise images
         '''
 
-        response = self.client.get(reverse('manager:workout:pdf-log', kwargs={'id': 3,
-                                                                              'images': 1}))
+        response = self.client.get(
+            reverse(
+                'manager:workout:pdf-log',
+                kwargs={
+                    'id': 3,
+                    'images': 1}))
 
         if fail:
             self.assertIn(response.status_code, (403, 404, 302))
@@ -117,12 +140,17 @@ class WorkoutPdfLogExportTestCase(WorkoutManagerTestCase):
 
     def export_pdf_with_images_and_comments(self, fail=False):
         '''
-        Helper function to test exporting a workout as a pdf, with images and comments
+        Helper function to test exporting a
+        workout as a pdf, with images and comments
         '''
 
-        response = self.client.get(reverse('manager:workout:pdf-log', kwargs={'id': 3,
-                                                                              'images': 1,
-                                                                              'comments': 1}))
+        response = self.client.get(
+            reverse(
+                'manager:workout:pdf-log',
+                kwargs={
+                    'id': 3,
+                    'images': 1,
+                    'comments': 1}))
 
         if fail:
             self.assertIn(response.status_code, (403, 404, 302))
@@ -178,9 +206,13 @@ class WorkoutPdfTableExportTestCase(WorkoutManagerTestCase):
 
         user = User.objects.get(username='test')
         uid, token = make_token(user)
-        response = self.client.get(reverse('manager:workout:pdf-table', kwargs={'id': 3,
-                                                                                'uidb64': uid,
-                                                                                'token': token}))
+        response = self.client.get(
+            reverse(
+                'manager:workout:pdf-table',
+                kwargs={
+                    'id': 3,
+                    'uidb64': uid,
+                    'token': token}))
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response['Content-Type'], 'application/pdf')
@@ -193,14 +225,19 @@ class WorkoutPdfTableExportTestCase(WorkoutManagerTestCase):
 
     def export_pdf_token_wrong(self):
         '''
-        Helper function to test exporting a workout as a pdf using a wrong token
+        Helper function to test exporting a
+        workout as a pdf using a wrong token
         '''
 
         uid = 'AB'
         token = 'abc-11223344556677889900'
-        response = self.client.get(reverse('manager:workout:pdf-table', kwargs={'id': 3,
-                                                                                'uidb64': uid,
-                                                                                'token': token}))
+        response = self.client.get(
+            reverse(
+                'manager:workout:pdf-table',
+                kwargs={
+                    'id': 3,
+                    'uidb64': uid,
+                    'token': token}))
 
         self.assertEqual(response.status_code, 403)
 
@@ -210,7 +247,11 @@ class WorkoutPdfTableExportTestCase(WorkoutManagerTestCase):
         '''
 
         # Create a workout
-        response = self.client.get(reverse('manager:workout:pdf-table', kwargs={'id': 3}))
+        response = self.client.get(
+            reverse(
+                'manager:workout:pdf-table',
+                kwargs={
+                    'id': 3}))
 
         if fail:
             self.assertIn(response.status_code, (403, 404, 302))

@@ -76,7 +76,7 @@ class WorkoutViewSet(viewsets.ModelViewSet):
         '''
 
         out = WorkoutCanonicalFormSerializer(
-                        self.get_object().canonical_representation).data
+            self.get_object().canonical_representation).data
         return Response(out)
 
 
@@ -206,7 +206,7 @@ class SetViewSet(WgerOwnerObjectModelViewSet):
         Only allow access to appropriate objects
         '''
         return Set.objects.filter(
-                                exerciseday__training__user=self.request.user)
+            exerciseday__training__user=self.request.user)
 
     def get_owner_objects(self):
         '''
@@ -234,7 +234,7 @@ class SettingViewSet(WgerOwnerObjectModelViewSet):
         Only allow access to appropriate objects
         '''
         return Setting.objects.filter(
-                            set__exerciseday__training__user=self.request.user)
+            set__exerciseday__training__user=self.request.user)
 
     def perform_create(self, serializer):
         '''
