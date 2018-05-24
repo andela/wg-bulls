@@ -33,10 +33,13 @@ from wger.exercises.models import Exercise, ExerciseImage
 
 class Command(BaseCommand):
     '''
-    Download exercise images from wger.de and updates the local database
+    Download exercise images from wger.de and updates
+    the local database
 
-    The script assumes that the local IDs correspond to the remote ones, which
-    is the case if the user installed the exercises from the JSON fixtures.
+    The script assumes that the local IDs correspond to
+    the remote ones, which
+    is the case if the user installed the exercises
+    from the JSON fixtures.
     Otherwise, the exercise is simply skipped
     '''
 

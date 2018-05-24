@@ -16,7 +16,8 @@
 
 import logging
 
-from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
+from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.urlresolvers import reverse
 from django.http.response import HttpResponseForbidden
 from django.shortcuts import get_object_or_404
@@ -36,7 +37,8 @@ from wger.gym.models import ContractType, Gym
 logger = logging.getLogger(__name__)
 
 
-class AddView(WgerFormMixin, LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+class AddView(WgerFormMixin, LoginRequiredMixin,
+              PermissionRequiredMixin, CreateView):
     '''
     View to add a new contract type
     '''
@@ -51,7 +53,8 @@ class AddView(WgerFormMixin, LoginRequiredMixin, PermissionRequiredMixin, Create
         '''
         Redirect back to overview page
         '''
-        return reverse('gym:contract_type:list', kwargs={'gym_pk': self.object.gym_id})
+        return reverse('gym:contract_type:list', kwargs={
+            'gym_pk': self.object.gym_id})
 
     def dispatch(self, request, *args, **kwargs):
         '''
@@ -60,7 +63,8 @@ class AddView(WgerFormMixin, LoginRequiredMixin, PermissionRequiredMixin, Create
         if not request.user.is_authenticated():
             return HttpResponseForbidden()
 
-        if request.user.userprofile.gym_id != int(self.kwargs['gym_pk']):
+        if request.user.userprofile.gym_id != int(
+                self.kwargs['gym_pk']):
             return HttpResponseForbidden()
 
         return super(AddView, self).dispatch(request, *args, **kwargs)
@@ -77,12 +81,14 @@ class AddView(WgerFormMixin, LoginRequiredMixin, PermissionRequiredMixin, Create
         Send some additional data to the template
         '''
         context = super(AddView, self).get_context_data(**kwargs)
-        context['form_action'] = reverse('gym:contract_type:add',
-                                         kwargs={'gym_pk': self.kwargs['gym_pk']})
+        context['form_action'] = reverse(
+            'gym:contract_type:add',
+            kwargs={'gym_pk': self.kwargs['gym_pk']})
         return context
 
 
-class UpdateView(WgerFormMixin, LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+class UpdateView(WgerFormMixin, LoginRequiredMixin,
+                 PermissionRequiredMixin, UpdateView):
     '''
     View to update an existing contract option
     '''
@@ -103,24 +109,28 @@ class UpdateView(WgerFormMixin, LoginRequiredMixin, PermissionRequiredMixin, Upd
         if request.user.userprofile.gym_id != contract_type.gym_id:
             return HttpResponseForbidden()
 
-        return super(UpdateView, self).dispatch(request, *args, **kwargs)
+        return super(UpdateView, self).dispatch(
+            request, *args, **kwargs)
 
     def get_success_url(self):
         '''
         Redirect back to overview page
         '''
-        return reverse('gym:contract_type:list', kwargs={'gym_pk': self.object.gym_id})
+        return reverse('gym:contract_type:list', kwargs={
+            'gym_pk': self.object.gym_id})
 
     def get_context_data(self, **kwargs):
         '''
         Send some additional data to the template
         '''
         context = super(UpdateView, self).get_context_data(**kwargs)
-        context['title'] = _(u'Edit {0}').format(self.object)
+        context['title'] = _(u'Edit {0}').format(
+            self.object)
         return context
 
 
-class DeleteView(WgerDeleteMixin, LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
+class DeleteView(WgerDeleteMixin, LoginRequiredMixin,
+                 PermissionRequiredMixin, DeleteView):
     '''
     View to delete an existing contract type
     '''
@@ -141,13 +151,15 @@ class DeleteView(WgerDeleteMixin, LoginRequiredMixin, PermissionRequiredMixin, D
         if request.user.userprofile.gym_id != contract_type.gym_id:
             return HttpResponseForbidden()
 
-        return super(DeleteView, self).dispatch(request, *args, **kwargs)
+        return super(DeleteView, self).dispatch(
+            request, *args, **kwargs)
 
     def get_success_url(self):
         '''
         Redirect back to overview page
         '''
-        return reverse('gym:contract_type:list', kwargs={'gym_pk': self.object.gym_id})
+        return reverse('gym:contract_type:list', kwargs={
+            'gym_pk': self.object.gym_id})
 
     def get_context_data(self, **kwargs):
         '''
@@ -184,7 +196,8 @@ class ListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
         if request.user.userprofile.gym_id != self.gym.id:
             return HttpResponseForbidden()
 
-        return super(ListView, self).dispatch(request, *args, **kwargs)
+        return super(ListView, self).dispatch(
+            request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         '''

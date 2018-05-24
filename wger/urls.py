@@ -15,6 +15,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with Workout Manager.  If not, see <http://www.gnu.org/licenses/>.
 
+from django.contrib import admin
 from tastypie.api import Api
 from rest_framework import routers
 
@@ -87,9 +88,11 @@ router = routers.DefaultRouter()
 router.register(r'workout', manager_api_views.WorkoutViewSet,
                 base_name='workout')
 router.register(r'workoutsession',
-                manager_api_views.WorkoutSessionViewSet, base_name='workoutsession')
+                manager_api_views.WorkoutSessionViewSet,
+                base_name='workoutsession')
 router.register(r'schedulestep',
-                manager_api_views.ScheduleStepViewSet, base_name='schedulestep')
+                manager_api_views.ScheduleStepViewSet,
+                base_name='schedulestep')
 router.register(r'schedule', manager_api_views.ScheduleViewSet,
                 base_name='schedule')
 router.register(r'day', manager_api_views.DayViewSet, base_name='day')
@@ -97,7 +100,8 @@ router.register(r'set', manager_api_views.SetViewSet, base_name='Set')
 router.register(r'setting', manager_api_views.SettingViewSet,
                 base_name='Setting')
 router.register(
-    r'workoutlog', manager_api_views.WorkoutLogViewSet, base_name='workoutlog')
+    r'workoutlog', manager_api_views.WorkoutLogViewSet,
+    base_name='workoutlog')
 
 # Core app
 router.register(r'userprofile', core_api_views.UserProfileViewSet,
@@ -106,45 +110,56 @@ router.register(r'language', core_api_views.LanguageViewSet,
                 base_name='language')
 router.register(r'daysofweek', core_api_views.DaysOfWeekViewSet,
                 base_name='daysofweek')
-router.register(r'license', core_api_views.LicenseViewSet, base_name='license')
+router.register(r'license', core_api_views.LicenseViewSet,
+                base_name='license')
 router.register(r'setting-repetitionunit',
-                core_api_views.RepetitionUnitViewSet, base_name='setting-repetition-unit')
+                core_api_views.RepetitionUnitViewSet,
+                base_name='setting-repetition-unit')
 router.register(r'setting-weightunit',
-                core_api_views.WeightUnitViewSet, base_name='setting-weight-unit')
+                core_api_views.WeightUnitViewSet,
+                base_name='setting-weight-unit')
 
 # Exercises app
 router.register(r'exercise', exercises_api_views.ExerciseViewSet,
                 base_name='exercise')
 router.register(
-    r'equipment', exercises_api_views.EquipmentViewSet, base_name='api')
+    r'equipment', exercises_api_views.EquipmentViewSet,
+    base_name='api')
 router.register(r'exercisecategory',
-                exercises_api_views.ExerciseCategoryViewSet, base_name='exercisecategory')
+                exercises_api_views.ExerciseCategoryViewSet,
+                base_name='exercisecategory')
 router.register(r'exerciseimage',
-                exercises_api_views.ExerciseImageViewSet, base_name='exerciseimage')
+                exercises_api_views.ExerciseImageViewSet,
+                base_name='exerciseimage')
 router.register(r'exercisecomment',
-                exercises_api_views.ExerciseCommentViewSet, base_name='exercisecomment')
+                exercises_api_views.ExerciseCommentViewSet,
+                base_name='exercisecomment')
 router.register(r'muscle', exercises_api_views.MuscleViewSet,
                 base_name='muscle')
 
 # Nutrition app
-router.register(r'ingredient', nutrition_api_views.IngredientViewSet,
-                base_name='api-ingredient')
 router.register(
-    r'weightunit', nutrition_api_views.WeightUnitViewSet, base_name='weightunit')
+    r'ingredient', nutrition_api_views.IngredientViewSet,
+    base_name='api-ingredient')
+router.register(
+    r'weightunit', nutrition_api_views.WeightUnitViewSet,
+    base_name='weightunit')
 router.register(r'ingredientweightunit',
-                nutrition_api_views.IngredientWeightUnitViewSet, base_name='ingredientweightunit')
+                nutrition_api_views.IngredientWeightUnitViewSet,
+                base_name='ingredientweightunit')
 router.register(r'nutritionplan',
-                nutrition_api_views.NutritionPlanViewSet, base_name='nutritionplan')
-router.register(r'meal', nutrition_api_views.MealViewSet, base_name='meal')
+                nutrition_api_views.NutritionPlanViewSet,
+                base_name='nutritionplan')
+router.register(r'meal', nutrition_api_views.MealViewSet,
+                base_name='meal')
 router.register(r'mealitem', nutrition_api_views.MealItemViewSet,
                 base_name='mealitem')
 
 # Weight app
 router.register(
-    r'weightentry', weight_api_views.WeightEntryViewSet, base_name='weightentry')
+    r'weightentry', weight_api_views.WeightEntryViewSet,
+    base_name='weightentry')
 
-
-from django.contrib import admin
 admin.autodiscover()
 
 #

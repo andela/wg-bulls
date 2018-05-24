@@ -40,7 +40,8 @@ class GymMembersCsvExportTestCase(WorkoutManagerTestCase):
             self.assertEqual(response['Content-Type'], 'text/csv')
 
             today = datetime.date.today()
-            filename = 'User-data-gym-{gym}-{t.year}-{t.month:02d}-{t.day:02d}.csv'.\
+            filename = 'User-data-gym-{gym}-\
+            {t.year}-{t.month:02d}-{t.day:02d}.csv'.\
                 format(t=today, gym=gym.id)
             self.assertEqual(
                 response['Content-Disposition'],

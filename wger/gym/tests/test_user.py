@@ -121,7 +121,8 @@ class GymAddUserTestCase(WorkoutManagerTestCase):
             self.assertEqual(response.status_code, 200)
             self.assertEqual(response['Content-Type'], 'text/csv')
             today = datetime.date.today()
-            filename = 'User-data-{t.year}-{t.month:02d}-{t.day:02d}-cletus.csv'.format(
+            filename = 'User-data-{t.year}-\
+            {t.month:02d}-{t.day:02d}-cletus.csv'.format(
                 t=today)
             self.assertEqual(
                 response['Content-Disposition'],
