@@ -325,6 +325,7 @@ class TextTemplateView(TemplateView):
     '''
     A regular templateView that sets the mime type as text/plain
     '''
+
     def render_to_response(self, context, **response_kwargs):
         response_kwargs['content_type'] = 'text/plain'
         return super(TextTemplateView, self).render_to_response(context, **response_kwargs)

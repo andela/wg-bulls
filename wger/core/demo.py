@@ -107,12 +107,13 @@ def create_demo_entries(user):
     # Weight log entries
     for reps in (8, 10, 12):
         for i in range(1, 8):
-            log = WorkoutLog(user=user,
-                             exercise=exercise,
-                             workout=workout,
-                             reps=reps,
-                             weight=18 - reps + random.randint(1, 4),
-                             date=datetime.date.today() - datetime.timedelta(weeks=i))
+            log = WorkoutLog(
+                user=user,
+                exercise=exercise,
+                workout=workout,
+                reps=reps,
+                weight=18 - reps + random.randint(1, 4),
+                date=datetime.date.today() - datetime.timedelta(weeks=i))
             weight_log.append(log)
 
     # French press
@@ -130,12 +131,13 @@ def create_demo_entries(user):
     # Weight log entries
     for reps in (7, 10):
         for i in range(1, 8):
-            log = WorkoutLog(user=user,
-                             exercise=exercise,
-                             workout=workout,
-                             reps=reps,
-                             weight=30 - reps + random.randint(1, 4),
-                             date=datetime.date.today() - datetime.timedelta(weeks=i))
+            log = WorkoutLog(
+                user=user,
+                exercise=exercise,
+                workout=workout,
+                reps=reps,
+                weight=30 - reps + random.randint(1, 4),
+                date=datetime.date.today() - datetime.timedelta(weeks=i))
             weight_log.append(log)
 
     # Squats
@@ -153,12 +155,13 @@ def create_demo_entries(user):
     # Weight log entries
     for reps in (5, 10, 12):
         for i in range(1, 8):
-            log = WorkoutLog(user=user,
-                             exercise=exercise,
-                             workout=workout,
-                             reps=reps,
-                             weight=110 - reps + random.randint(1, 10),
-                             date=datetime.date.today() - datetime.timedelta(weeks=i))
+            log = WorkoutLog(
+                user=user,
+                exercise=exercise,
+                workout=workout,
+                reps=reps,
+                weight=110 - reps + random.randint(1, 10),
+                date=datetime.date.today() - datetime.timedelta(weeks=i))
             weight_log.append(log)
 
     # Crunches

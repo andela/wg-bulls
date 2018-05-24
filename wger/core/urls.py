@@ -16,7 +16,6 @@
 
 
 from django.conf.urls import (
-    patterns,
     url,
     include
 )
@@ -97,7 +96,8 @@ patterns_user = [
         user.UserListView.as_view(),
         name='list'),
 
-    # Password reset is implemented by Django, no need to cook our own soup here
+    # Password reset is implemented by Django,
+    # no need to cook our own soup here
     # (besides the templates)
     url(r'^password/change$',
         views.password_change,
@@ -108,16 +108,20 @@ patterns_user = [
         views.password_reset,
         {'template_name': 'user/password_reset_form.html',
          'email_template_name': 'user/password_reset_email.html',
-         'post_reset_redirect': reverse_lazy('core:user:password_reset_done')},
+         'post_reset_redirect': reverse_lazy(
+             'core:user:password_reset_done')},
         name='password_reset'),
     url(r'^password/reset/done/$',
         views.password_reset_done,
         {'template_name': 'user/password_reset_done.html'},
         name='password_reset_done'),
-    url(r'^password/reset/check/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})$',
+    url(
+        r'^password/reset/check/(?P<uidb64>[0-9A-Za-z_\-]+)/(\
+        ?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})$',
         views.password_reset_confirm,
         {'template_name': 'user/password_reset_confirm.html',
-         'post_reset_redirect': reverse_lazy('core:user:password_reset_complete')},
+         'post_reset_redirect': reverse_lazy(
+             'core:user:password_reset_complete')},
         name='password_reset_confirm'),
     url(r'^password/reset/complete/$',
         views.password_reset_complete,
@@ -203,8 +207,10 @@ urlpatterns = [
 
     url(r'^language/', include(patterns_language, namespace="language")),
     url(r'^user/', include(patterns_user, namespace="user")),
-    url(r'^license/', include(patterns_license, namespace="license")),
+    url(r'^license/',
+        include(patterns_license, namespace="license")),
     url(r'^repetition-unit/',
         include(patterns_repetition_units, namespace="repetition-unit")),
-    url(r'^weight-unit/', include(patterns_weight_units, namespace="weight-unit")),
+    url(r'^weight-unit/',
+        include(patterns_weight_units, namespace="weight-unit")),
 ]

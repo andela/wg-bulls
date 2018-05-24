@@ -43,8 +43,10 @@ def get_current_settings(exercise, set_id):
     '''
     Does a filter on the sets
 
-    We need to do this here because it's not possible to pass arguments to function in
-    the template, and we are only interested on the settings that belong to the current
+    We need to do this here because it's not
+     possible to pass arguments to function in
+    the template, and we are only interested on
+     the settings that belong to the current
     set
     '''
     return exercise.setting_set.filter(set_id=set_id)
@@ -66,19 +68,24 @@ def pagination(paginator, page):
     Renders the necessary links to paginating a long list
     '''
 
-    # For very long lists (e.g. the English ingredient with more than 8000 items)
-    # we muck around here to remove the pages not inmediately 'around' the current
+    # For very long lists (e.g. the English
+    # ingredient with more than 8000 items)
+    # we muck around here to remove the pages
+    # not inmediately 'around' the current
     # one, otherwise we end up with a useless block with 300 pages.
     if paginator.num_pages > PAGINATION_MAX_TOTAL_PAGES:
 
         start_page = page.number - PAGINATION_PAGES_AROUND_CURRENT
-        for i in range(page.number - PAGINATION_PAGES_AROUND_CURRENT, page.number + 1):
+        for i in range(page.number -
+                       PAGINATION_PAGES_AROUND_CURRENT, page.number + 1):
             if i > 0:
                 start_page = i
                 break
 
-        end_page = page.number + PAGINATION_PAGES_AROUND_CURRENT
-        for i in range(page.number, page.number + PAGINATION_PAGES_AROUND_CURRENT):
+        end_page = page.number +\
+            PAGINATION_PAGES_AROUND_CURRENT
+        for i in range(page.number, page.number +
+                       PAGINATION_PAGES_AROUND_CURRENT):
             if i > paginator.num_pages:
                 end_page = i
                 break
@@ -135,7 +142,8 @@ def get_item(dictionary, key):
 @register.simple_tag
 def auto_link_css(flavour='full', css=''):
     '''
-    Adds the appropriate classes to a sidebar link depending on the site version
+    Adds the appropriate classes to
+     a sidebar link depending on the site version
 
     :param flavour: flavour of the site: 'mobile' or 'full'
     :param css: the CSS class, if any, of the link
@@ -169,12 +177,14 @@ def fa_class(class_name='', size='', fixed_width=True):
 
 
 @register.simple_tag
-def trans_weight_unit(unit, user=None):
+def trans_weight_unit(
+        unit, user=None):
     '''
     Returns the correct (translated) weight unit
 
     :param unit: the weight unit. Allowed values are 'kg' and 'g'
-    :param user: the user object, needed to access the profile. If this evaluates
+    :param user: the user object,
+     needed to access the profile. If this evaluates
                  to False, metric is used
     :return: translated unit
     '''
@@ -211,7 +221,8 @@ class SpacelessNode(template.base.Node):
     def render(self, context):
         if settings.WGER_SETTINGS['REMOVE_WHITESPACE']:
             from django.utils.html import strip_spaces_between_tags
-            return strip_spaces_between_tags(self.nodelist.render(context).strip())
+            return strip_spaces_between_tags(
+                self.nodelist.render(context).strip())
         else:
             return self.nodelist.render(context)
 
@@ -233,7 +244,8 @@ def spaceless_config(parser, token):
 @register.filter(name='form_field_add_css')
 def form_field_add_css(field, css):
     '''
-    Adds a CSS class to a form field. This is needed among other places for
+    Adds a CSS class to a form field.
+     This is needed among other places for
     bootstrap 3, which needs a 'form-control' class in the field itself
     '''
     return field.as_widget(attrs={"class": css})
@@ -242,7 +254,8 @@ def form_field_add_css(field, css):
 @register.filter(name='is_checkbox')
 def is_checkbox(field):
     '''
-    Tests if a field element is a checkbox, as it needs to be handled slightly different
+    Tests if a field element is a checkbox,
+     as it needs to be handled slightly different
 
     :param field: a form field
     :return: boolen
@@ -260,13 +273,15 @@ def is_multiple(field):
     :return: boolen
     '''
     return isinstance(field.field.widget, BootstrapSelectMultiple) \
-        or isinstance(field.field.widget, BootstrapSelectMultipleTranslatedOriginal)
+        or isinstance(
+            field.field.widget, BootstrapSelectMultipleTranslatedOriginal)
 
 
 @register.filter(name='is_fileupload')
 def is_fileupload(field):
     '''
-    Tests if a field element is a file upload, as it needs to be handled slightly different
+    Tests if a field element is a file upload
+    °as it needs to be handled slightly different
 
     :param field: a form field
     :return: boolen

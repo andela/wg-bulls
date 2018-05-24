@@ -43,7 +43,6 @@ class BmiTestCase(WorkoutManagerTestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_calculator(self):
-
         '''
         Tests the calculator itself
         '''
@@ -60,7 +59,6 @@ class BmiTestCase(WorkoutManagerTestCase):
         self.assertEqual(Decimal(bmi['height']), Decimal(180))
 
     def test_calculator_imperial(self):
-
         '''
         Tests the calculator using imperial units
         '''

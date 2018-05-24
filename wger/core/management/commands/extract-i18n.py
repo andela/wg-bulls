@@ -26,10 +26,12 @@ from wger.exercises.models import (
 
 class Command(BaseCommand):
     '''
-    Helper command to read out the strings to manually include in the .po files
+    Helper command to read out the strings to
+    manually include in the .po files
     '''
 
-    help = 'Read out all strings that have to be included manually in the .po file'
+    help = 'Read out all strings that have to '\
+        'be included manually in the .po file'
 
     def handle(self, **options):
 
