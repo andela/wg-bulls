@@ -44,7 +44,7 @@ class WorkoutResource(ModelResource):
     '''
 
     days = fields.ToManyField(
-                        'wger.manager.api.resources.DayResource', 'day_set')
+        'wger.manager.api.resources.DayResource', 'day_set')
 
     def authorized_read_list(self, object_list, bundle):
         '''
@@ -67,7 +67,7 @@ class WorkoutSessionResource(ModelResource):
     '''
 
     workout = fields.ToOneField(
-                    'wger.manager.api.resources.WorkoutResource', 'workout')
+        'wger.manager.api.resources.WorkoutResource', 'workout')
 
     def authorized_read_list(self, object_list, bundle):
         '''
@@ -78,7 +78,7 @@ class WorkoutSessionResource(ModelResource):
     class Meta:
         queryset = WorkoutSession.objects.all()
         authentication = MultiAuthentication(
-                            SessionAuthentication(), ApiKeyAuthentication())
+            SessionAuthentication(), ApiKeyAuthentication())
         authorization = UserObjectsOnlyAuthorization()
         filtering = {'id': ALL,
                      "date": ALL,
@@ -93,7 +93,7 @@ class ScheduleStepResource(ModelResource):
 
     workout = fields.ToOneField(WorkoutResource, 'workout')
     schedule = fields.ToOneField(
-                    'wger.manager.api.resources.ScheduleResource', 'schedule')
+        'wger.manager.api.resources.ScheduleResource', 'schedule')
 
     def authorized_read_list(self, object_list, bundle):
         '''
@@ -169,7 +169,7 @@ class SetResource(ModelResource):
         Filter to own objects
         '''
         return object_list.filter(
-                            exerciseday__training__user=bundle.request.user)
+            exerciseday__training__user=bundle.request.user)
 
     class Meta:
         queryset = Set.objects.all()
@@ -194,7 +194,7 @@ class SettingResource(ModelResource):
         Filter to own objects
         '''
         return object_list.filter(
-                        set__exerciseday__training__user=bundle.request.user)
+            set__exerciseday__training__user=bundle.request.user)
 
     class Meta:
         queryset = Setting.objects.all()
