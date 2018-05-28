@@ -64,6 +64,9 @@ from wger.gym.models import (
     Contract
 )
 
+from fitbit import FitbitOauth2Client, Fitbit
+import base64, requests, datetime, decimal
+
 logger = logging.getLogger(__name__)
 
 
@@ -529,3 +532,122 @@ class UserListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
                                           _('Gym')],
                                  'users': context['object_list']['members']}
         return context
+
+ 
+@login_required
+def add_fitbit_support(request, code=None):
+    '''
+    Gets data from fitbit upon the user authorizing Wger to access their data
+    '''
+    template_data = {}
+    client_id = '228DDB'
+    client_secret = 'fbf2bdaeb30b9e8b5fd26d9cc1be8a5a'
+
+    fitbit_client = FitbitOauth2Client(client_id, client_secret)
+
+    if 'code' in request.GET:  # get token
+        code = request.GET.get("code", "")
+        form = {
+            'client_secret': client_secret,
+            'code': code,
+            'client_id': client_id,
+            'grant_type': 'authorization_code',
+            'redirect_uri': 'http://127.0.0.1:8000/en/user/add_fitbit'
+        }
+        headers = {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            "Authorization": 'Basic MjI4RERCOmZiZjJiZGFlYjMwYjllOGI1ZmQyNmQ5Y2MxYmU4YTVh'
+        }
+
+        # Get user weight data from fitbit
+        response = requests.post(fitbit_client.request_token_url, form, headers=headers).json()
+
+        if "access_token" in response:
+            token = response['access_token']
+            user_id = response['user_id']
+            headers['Authorization'] = 'Bearer ' + token
+
+            response_weight = requests.get(
+                'https://api.fitbit.com/1/user/' + user_id + '/profile.json', headers=headers)
+            print("hahahahah",response_weight.json())
+            weight = response_weight.json()['user']['weight']
+
+
+            response_nutrition = requests.get(
+                'https://api.fitbit.com/1/user/' + user_id + '/foods/log/date/2017-03-18.json',
+                headers=headers)
+
+            response_activity = requests.get(
+                'https://api.fitbit.com/1/user/' + user_id + '/activities/date/2017-03-18.json',
+                headers=headers)
+
+            # add weight and activity to db
+            try:
+                entry = WeightEntry()
+                entry.weight = weight
+                entry.user = request.user
+                entry.date = datetime.date.today()
+                entry.save()
+                messages.success(request, _('Successfully synced weight data.'))
+
+                if not ExerciseCategory.objects.filter(name='Fitbit'):
+                    fitbit_category = ExerciseCategory()
+                    fitbit_category.name = 'Fitbit'
+                    fitbit_category.save()
+
+                for detail in response_activity.json()['activities']:
+                    name = detail['name']
+                    description = detail['description']
+
+                exercise = Exercise()
+                exercise.name_original = name
+                exercise.name = name
+                exercise.category = ExerciseCategory.objects.get(name='Fitbit')
+                exercise.description = description
+                exercise.language = Language.objects.get(short_name='en')
+                exercise.save()
+            except Exception as error:
+                if "UNIQUE constraint failed" in str(error):
+                    messages.info(request, _('Already synced up for today.'))
+
+            try:
+                for food in response_nutrition.json()['foods']:
+                    name = food.get('loggedFood').get('name')
+                    nutritionalValues = food.get('nutritionalValues')
+
+                    if nutritionalValues:
+                        energy = nutritionalValues.get('calories', 0)
+                        protein = nutritionalValues.get('protein', 0)
+                        carbohydrates = nutritionalValues.get('carbs', 0)
+                        fat = nutritionalValues.get('fat', 0)
+                        fibres = nutritionalValues.get('fiber', 0)
+                        sodium = nutritionalValues.get('sodium', 0)
+                    else:
+                        energy, protein, carbohydrates, fat, fibres, sodium = [0, 0, 0, 0, 0, 0]
+
+                    ingredient = Ingredient()
+                    if not Ingredient.objects.filter(name=name).exists():
+                        ingredient.user = request.user
+                        ingredient.language = Language.objects.get(short_name='en')
+                        ingredient.name = name
+                        ingredient.energy = energy
+                        ingredient.protein = protein
+                        ingredient.carbohydrates = carbohydrates
+                        ingredient.fat = fat
+                        ingredient.fibres = fibres
+                        ingredient.sodium = sodium
+                        ingredient.save()
+            except Exception as error:
+                if "UNIQUE constraint failed" in str(error):
+                    messages.info(request, _('Already synced up for today.'))
+
+            return HttpResponseRedirect(reverse('weight:overview',
+                                                kwargs={'username': request.user.username}))
+        else:
+            messages.warning(request, _('Something went wrong.'))
+        return render(request, 'user/add_fitbit.html', template_data)
+
+    # link to page that makes user authorize wger to access their fitbit
+    template_data['fitbit_auth_link'] = fitbit_client.authorize_token_url(
+        redirect_uri='http://127.0.0.1:8000/en/user/add_fitbit', prompt='consent')[0]
+    return render(request, 'user/fitbit_support.html', template_data)
