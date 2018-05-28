@@ -533,7 +533,7 @@ class UserListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
                                  'users': context['object_list']['members']}
         return context
 
- 
+
 @login_required
 def add_fitbit_support(request, code=None):
     '''
@@ -569,9 +569,7 @@ def add_fitbit_support(request, code=None):
 
             response_weight = requests.get(
                 'https://api.fitbit.com/1/user/' + user_id + '/profile.json', headers=headers)
-            print("hahahahah",response_weight.json())
             weight = response_weight.json()['user']['weight']
-
 
             response_nutrition = requests.get(
                 'https://api.fitbit.com/1/user/' + user_id + '/foods/log/date/2017-03-18.json',
