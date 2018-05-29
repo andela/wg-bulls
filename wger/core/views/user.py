@@ -65,7 +65,10 @@ from wger.gym.models import (
 )
 
 from fitbit import FitbitOauth2Client, Fitbit
-import base64, requests, datetime, decimal
+import base64
+import requests
+import datetime
+import decimal
 
 logger = logging.getLogger(__name__)
 
