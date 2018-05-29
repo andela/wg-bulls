@@ -91,7 +91,7 @@ class UserRegistrationFromApiViewSet(viewsets.ModelViewSet):
 
                 return Response({'message': 'User created successfully'}, status.HTTP_201_CREATED)
             else:
-                return Response({'message': 'Please check the credentials and try again'},
+                return Response({'message': 'Email field is missing'},
                                 status.HTTP_400_BAD_REQUEST)
 
         else:
