@@ -70,6 +70,9 @@ INSTALLED_APPS = (
     # thumbnails
     'easy_thumbnails',
 
+    # Django-social-auth
+    'social_django',
+
     # CSS/JS compressor
     'compressor',
 
@@ -124,6 +127,9 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.locale.LocaleMiddleware',
 
+    # Django social-auth middleware
+    'social_django.middleware.SocialAuthExceptionMiddleware',
+
     # Django mobile
     'django_mobile.middleware.MobileDetectionMiddleware',
     'django_mobile.middleware.SetFlavourMiddleware',
@@ -131,7 +137,14 @@ MIDDLEWARE_CLASSES = (
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
-    'wger.utils.helpers.EmailAuthBackend'
+    'wger.utils.helpers.EmailAuthBackend',
+
+    # Social-auth backends
+    'social_core.backends.twitter.TwitterOAuth',
+    'social_core.backends.facebook.FacebookOAuth2',
+    'social_core.backends.open_id.OpenIdAuth',
+    'social_core.backends.google.GoogleOpenId',
+    'social_core.backends.google.GoogleOAuth2',
 )
 
 TEMPLATES = [
@@ -150,6 +163,10 @@ TEMPLATES = [
                 'django.template.context_processors.static',
                 'django.template.context_processors.tz',
                 'django.contrib.messages.context_processors.messages',
+
+                # Django social-auth
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect',
 
                 # Django mobile
                 'django_mobile.context_processors.flavour',
@@ -196,6 +213,15 @@ EMAIL_SUBJECT_PREFIX = '[wger] '
 LOGIN_URL = '/user/login'
 LOGIN_REDIRECT_URL = '/'
 
+# Twitter social-auth settings
+SOCIAL_AUTH_TWITTER_KEY = 'IxPnp6wm11EinVYQNqcEa9poZ'
+SOCIAL_AUTH_TWITTER_SECRET = 'zuEz1B4pIwF1SSYAt6tZNxiOE8EvI2vzZYB1Xyu8av2RavvjKX'
+
+SOCIAL_AUTH_FACEBOOK_KEY = '451230318647842'
+SOCIAL_AUTH_FACEBOOK_SECRET = '7919df747bfa89b98a7be5cbfb3d744e'
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY ='412817226779-firpa2n05rtohpt2non2rv727l1ihb5j.apps.googleusercontent.com'
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'XKOQj1oPnwGLN35t9-PikNTu'
 
 #
 # Internationalization
