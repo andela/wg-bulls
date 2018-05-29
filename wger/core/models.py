@@ -135,7 +135,7 @@ class UserProfile(models.Model):
     Flag to mark that the user can create users via api
     '''
 
-    created_by = models.CharField(max_length=255, editable=False, null=True)
+    created_by = models.CharField(max_length=150, null=True, blank=True)
     '''
     Flag to mark the user who created this user from an api
     '''
