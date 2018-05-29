@@ -129,6 +129,17 @@ class UserProfile(models.Model):
     Flag to mark a user created from an api call
     '''
 
+    can_create_users = models.BooleanField(default=False,
+                                           editable=False)
+    '''
+    Flag to mark that the user can create users via api
+    '''
+
+    created_by = models.ForeignKey(User, editable=False, null=True, blank=True)
+    '''
+    Flag to mark the user who created this user from an api
+    '''
+
     #
     # User preferences
     #
