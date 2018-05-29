@@ -130,7 +130,7 @@ class UserProfile(models.Model):
     '''
 
     can_create_users = models.BooleanField(default=False,
-                                           editable=False)
+                                           editable=True)
     '''
     Flag to mark that the user can create users via api
     '''
