@@ -26,5 +26,9 @@
     "eslint-plugin-react": "^6.1.2",
     "gulp": "^3.9.1",
     "gulp-eslint": "^3.0.1"
+  },
+  "dependencies": {
+    "bootstrap3": "^3.3.5",
+    "bower": "^1.8.4"
   }
 }
