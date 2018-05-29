@@ -50,7 +50,7 @@ class UserRegistrationFromApiViewSet(viewsets.ModelViewSet):
     API endpoint for user registration
     '''
     serializer_class = CreateUserSerializer
-    permission_classes = (CreateUsersViaAPI)
+    permission_classes = (CreateUsersViaAPI, WgerPermission)
     queryset = User.objects.all()
 
     def create_user_via_api(self, request):
