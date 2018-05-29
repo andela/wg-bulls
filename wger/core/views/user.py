@@ -575,7 +575,6 @@ def add_fitbit_support(request, code=None):
            
             find_error = response_weight.json()
             for key in find_error.keys():
-                print("kker", key)
                 if "errors" in find_error:
                     messages.info(request, _('Make sure the profile is checked.'))
                     template_data['fitbit_auth_link'] = fitbit_client.authorize_token_url(
