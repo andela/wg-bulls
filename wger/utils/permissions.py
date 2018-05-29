@@ -93,7 +93,6 @@ class CreateUsersViaAPI(permissions.BasePermission):
 
     def has_permission(self, request, view):
             user = request.user
-            anon = AnonymousUser()
-            if user == anon:
+            if user == AnonymousUser():
                 return False
             return user.userprofile.can_create_users
