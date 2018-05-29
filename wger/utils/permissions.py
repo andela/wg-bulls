@@ -16,6 +16,7 @@
 # along with Workout Manager.  If not, see <http://www.gnu.org/licenses/>.
 
 from rest_framework import permissions
+from django.contrib.auth.models import AnonymousUser
 
 
 class WgerPermission(permissions.BasePermission):
@@ -92,4 +93,7 @@ class CreateUsersViaAPI(permissions.BasePermission):
 
     def has_permission(self, request, view):
             user = request.user
-            return user.userprofile.can_add_user
+            anon = AnonymousUser()
+            if user == anon:
+                return False
+            return user.userprofile.can_create_users
