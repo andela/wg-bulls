@@ -124,7 +124,7 @@ class UserProfile(models.Model):
     '''
 
     is_from_api = models.BooleanField(default=False,
-                                      editable=False)
+                                      editable=True)
     '''
     Flag to mark a user created from an api call
     '''
