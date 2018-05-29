@@ -68,3 +68,7 @@ node_modules
 venv-django/*
 # Migrations folders
 wger/*/migrations/*
+
+# Folder tracker
+*.DS_Store
+
