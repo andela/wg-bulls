@@ -78,6 +78,7 @@ class UserRegistrationFromApiViewSet(viewsets.ModelViewSet):
                 language = Language.objects.get(
                     short_name=translation.get_language())
                 api_user.userprofile.notification_language = language
+
                 # Set default gym, if needed
                 gym_config = GymConfig.objects.get(pk=1)
                 if gym_config.default_gym:
@@ -88,14 +89,13 @@ class UserRegistrationFromApiViewSet(viewsets.ModelViewSet):
                     config.gym = gym_config.default_gym
                     config.user = api_user
                     config.save()
-
                 return Response({'message': 'User created successfully'}, status.HTTP_201_CREATED)
-            else:
-                return Response({'message': 'Email field is missing'},
-                                status.HTTP_400_BAD_REQUEST)
+
+            return Response({'message': 'Email field is missing'},
+                            status.HTTP_400_BAD_REQUEST)
 
         else:
-            return Response({'message': 'Application not allowed to access this resource'},
+            return Response({'message': 'Application is not allowed to access this resource'},
                             status.HTTP_400_BAD_REQUEST)
 
 
