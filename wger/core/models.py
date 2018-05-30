@@ -123,14 +123,14 @@ class UserProfile(models.Model):
     Flag to mark a temporary user (demo account)
     '''
 
-    is_from_api = models.BooleanField(default=False,
-                                      editable=True)
+    is_from_api = models.NullBooleanField(null=True,
+                                          editable=True, blank=True)
     '''
     Flag to mark a user created from an api call
     '''
 
-    can_create_users = models.BooleanField(null=True,
-                                           editable=True, blank=True)
+    can_create_users = models.NullBooleanField(null=True,
+                                               editable=True, blank=True)
     '''
     Flag to mark that the user can create users via api
     '''
