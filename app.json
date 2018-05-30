@@ -1,0 +1,22 @@
+{
+    "name": "wg-bulls",
+    "description": "app.json",
+    "scripts": {},
+    "env": {},
+    "formation": {
+      "web": {
+        "quantity": 1
+      }
+    },
+    "addons": [
+      "heroku-postgresql"
+    ],
+    "buildpacks": [
+      {
+        "url": "heroku/nodejs"
+      },
+      {
+        "url": "https://github.com/alexmochu/wger-buildpack-python.git"
+      }
+    ]
+  }
