@@ -14,7 +14,7 @@
     ],
     "dependencies": {
       "bootstrap": "^3.3.7",
-      "components-font-awesome": "^4.7.0",
+      "components-font-awesome": "^5.0.6",
       "d3": ">=4",
       "datatables": "DataTables#^1.10.16",
       "shariff": "^2.1.1",
