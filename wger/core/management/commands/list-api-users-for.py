@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU Affero General Public License
 
 
-from django.contrib.auth.models import User, UserProfile
+from wger.core.models import UserProfile, User
 from django.core.management.base import BaseCommand, CommandError
 
 
@@ -44,11 +44,13 @@ class Command(BaseCommand):
             raise CommandError("Provide a valid username")
 
         if user:
-            profiles = UserProfile.objects.filter(added_by=user)
-
-        self.stdout.write(self.style.SUCCESS("These are the users created by: {0}"
-                                             .format(username)))
+            profiles = UserProfile.objects.filter(created_by=user)
 
         if profiles:
+            self.stdout.write(self.style.SUCCESS("These are the users created by: {0}"
+                                                 .format(username)))
             for profile in profiles:
                 self.stdout.write("User: {0}".format(profile.user.username))
+        else:
+            self.stdout.write(self.style.SUCCESS(
+                "No users created by this user"))
