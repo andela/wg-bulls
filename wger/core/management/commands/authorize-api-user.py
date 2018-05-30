@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU Affero General Public License
 
 
-from django.contrib.auth.models import User, UserProfile
+from wger.core.models import User
 from django.core.management.base import BaseCommand, CommandError
 from optparse import make_option
 from django.contrib.auth import authenticate
@@ -52,7 +52,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         self.stdout.write('** Updating this user permissions')
-        if (options.get('username') & options.get('password')) is False:
+        if (options.get('username') or options.get('password')) is False:
             self.stdout.write('Please add both --username and --password')
             return
         try:
