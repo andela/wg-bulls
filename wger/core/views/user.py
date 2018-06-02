@@ -572,7 +572,7 @@ def add_fitbit_support(request, code=None):
 
             response_weight = requests.get(
                 'https://api.fitbit.com/1/user/' + user_id + '/profile.json', headers=headers)
-           
+
             find_error = response_weight.json()
             for key in find_error.keys():
                 if "errors" in find_error:
