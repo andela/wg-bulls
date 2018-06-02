@@ -28,6 +28,10 @@
     "gulp-eslint": "^3.0.1"
   },
   "dependencies": {
+<<<<<<< HEAD
+=======
+    "bootstrap": "^3.3.5",
+>>>>>>> d7aa06bf29fc11d69dd5295e7668c90d1dd1dc13
     "bootstrap3": "^3.3.5",
     "bower": "^1.8.4"
   }
