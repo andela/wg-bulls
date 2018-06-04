@@ -63,7 +63,7 @@ Then install the python packages from pypi in the virtualenv::
 
 ::
 
- $ git clone https://github.com/wger-project/wger.git
+ $ git clone https://github.com/andela/wger-bulls.git
  $ cd wger
  $ pip install -r requirements.txt  # or requirements_devel.txt to develop
  $ invoke create_settings \
@@ -130,7 +130,7 @@ Stable version (from PyPI)
 
 ::
 
- $ wger bootstrap_wger
+ $ wger bootstrap
 
 
 3) Log in as: **admin**, password **admin**
@@ -144,13 +144,13 @@ The available options for the ``wger`` command (if installed from PyPI) or
 <command>``::
 
 
-  bootstrap_wger          Performs all steps necessary to bootstrap the application
+  bootstrap          Performs all steps necessary to bootstrap the application
   config_location         Returns the default location for the settings file and the data folder
   create_or_reset_admin   Creates an admin user or resets the password for an existing one
   create_settings         Creates a local settings file
   load_fixtures           Loads all fixtures
   migrate_db              Run all database migrations
-  start_wger              Start the application using django's built in webserver
+  start              Start the application using django's built in webserver
 
 Contact
 =======
@@ -190,3 +190,9 @@ or (at your option) any later version.
 
 Some images where taken from Wikipedia, see the SOURCES file in their respective
 folders for more details.
+
+User Registration Via API
+=========================
+A user can register other users via the API. This user will need authorization from the admin.
+The admin need to call the command `python manage.py authorize-api-user <username> <admin password>` to give a user privileges to register users via the endpoint `api/v2/users`. 
+To view users registered via API by a certain user, use the command `python manage.py list-api-users-for <username of the user>`.

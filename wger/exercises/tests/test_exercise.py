@@ -40,7 +40,9 @@ class ExerciseRepresentationTestCase(WorkoutManagerTestCase):
         '''
         Test that the representation of an object is correct
         '''
-        self.assertEqual("{0}".format(Exercise.objects.get(pk=1)), 'An exercise')
+        self.assertEqual("{0}".format(
+            Exercise.objects.
+            get(pk=1)), 'An exercise')
 
 
 class ExerciseShareButtonTestCase(WorkoutManagerTestCase):
@@ -66,12 +68,14 @@ class ExerciseShareButtonTestCase(WorkoutManagerTestCase):
 
 class ExerciseIndexTestCase(WorkoutManagerTestCase):
 
-    def exercise_index(self, logged_in=True, demo=False, admin=False):
+    def exercise_index(self, logged_in=True,
+                       demo=False, admin=False):
         '''
         Tests the exercise overview page
         '''
 
-        response = self.client.get(reverse('exercise:exercise:overview'))
+        response = self.client.get(
+            reverse('exercise:exercise:overview'))
 
         # Page exists
         self.assertEqual(response.status_code, 200)
@@ -102,17 +106,21 @@ class ExerciseIndexTestCase(WorkoutManagerTestCase):
 
         # Only authorized users see the edit links
         if admin:
-            self.assertNotContains(response, 'Only registered users can do this')
+            self.assertNotContains(
+                response, 'Only registered users can do this')
 
         if logged_in and not demo:
-            self.assertNotContains(response, 'Only registered users can do this')
+            self.assertNotContains(
+                response, 'Only registered users can do this')
 
         if logged_in and demo:
-            self.assertContains(response, 'Only registered users can do this')
+            self.assertContains(response,
+                                'Only registered users can do this')
 
     def test_exercise_index_editor(self):
         '''
-        Tests the exercise overview page as a logged in user with editor rights
+        Tests the exercise overview page as a
+        logged in user with editor rights
         '''
 
         self.user_login('admin')
@@ -120,7 +128,8 @@ class ExerciseIndexTestCase(WorkoutManagerTestCase):
 
     def test_exercise_index_non_editor(self):
         '''
-        Tests the exercise overview page as a logged in user without editor rights
+        Tests the exercise overview page as a
+        logged in user without editor rights
         '''
 
         self.user_login('test')
@@ -128,7 +137,8 @@ class ExerciseIndexTestCase(WorkoutManagerTestCase):
 
     def test_exercise_index_demo_user(self):
         '''
-        Tests the exercise overview page as a logged in demo user
+        Tests the exercise overview page as a
+        logged in demo user
         '''
 
         self.user_login('demo')
@@ -136,7 +146,8 @@ class ExerciseIndexTestCase(WorkoutManagerTestCase):
 
     def test_exercise_index_logged_out(self):
         '''
-        Tests the exercise overview page as an anonymous (logged out) user
+        Tests the exercise overview page as an
+        anonymous (logged out) user
         '''
 
         self.exercise_index(logged_in=False)
@@ -147,7 +158,8 @@ class ExerciseIndexTestCase(WorkoutManagerTestCase):
         '''
         self.user_login('admin')
         ExerciseCategory.objects.all().delete()
-        response = self.client.get(reverse('exercise:exercise:overview'))
+        response = self.client.get(
+            reverse('exercise:exercise:overview'))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'No categories')
 
@@ -162,7 +174,8 @@ class ExerciseDetailTestCase(WorkoutManagerTestCase):
         Tests the exercise details page
         '''
 
-        response = self.client.get(reverse('exercise:exercise:view', kwargs={'id': 1}))
+        response = self.client.get(
+            reverse('exercise:exercise:view', kwargs={'id': 1}))
         self.assertEqual(response.status_code, 200)
 
         # Correct tab is selected
@@ -184,20 +197,24 @@ class ExerciseDetailTestCase(WorkoutManagerTestCase):
             self.assertContains(response, 'Edit')
             self.assertContains(response, 'Delete')
             self.assertContains(response, 'Add new comment')
-            self.assertNotContains(response, 'Exercise is pending review')
+            self.assertNotContains(response,
+                                   'Exercise is pending review')
         else:
             self.assertNotContains(response, 'Edit')
             self.assertNotContains(response, 'Delete')
             self.assertNotContains(response, 'Add new comment')
-            self.assertNotContains(response, 'Exercise is pending review')
+            self.assertNotContains(response,
+                                   'Exercise is pending review')
 
         # Ensure that non-existent exercises throw a 404.
-        response = self.client.get(reverse('exercise:exercise:view', kwargs={'id': 42}))
+        response = self.client.get(
+            reverse('exercise:exercise:view', kwargs={'id': 42}))
         self.assertEqual(response.status_code, 404)
 
     def test_exercise_detail_editor(self):
         '''
-        Tests the exercise details page as a logged in user with editor rights
+        Tests the exercise details page as a
+        logged in user with editor rights
         '''
 
         self.user_login('admin')
@@ -205,7 +222,8 @@ class ExerciseDetailTestCase(WorkoutManagerTestCase):
 
     def test_exercise_detail_non_editor(self):
         '''
-        Tests the exercise details page as a logged in user without editor rights
+        Tests the exercise details page as a logged
+        in user without editor rights
         '''
 
         self.user_login('test')
@@ -213,7 +231,8 @@ class ExerciseDetailTestCase(WorkoutManagerTestCase):
 
     def test_exercise_detail_logged_out(self):
         '''
-        Tests the exercise details page as an anonymous (logged out) user
+        Tests the exercise details page as an
+        anonymous (logged out) user
         '''
 
         self.exercise_detail(editor=False)
@@ -226,16 +245,18 @@ class ExercisesTestCase(WorkoutManagerTestCase):
 
     def add_exercise_user_fail(self):
         '''
-        Helper function to test adding exercises by users that aren't authorized
+        Helper function to test adding exercises
+        by users that aren't authorized
         '''
 
         # Add an exercise
         count_before = Exercise.objects.count()
-        response = self.client.post(reverse('exercise:exercise:add'),
-                                    {'category': 2,
-                                     'name_original': 'my test exercise',
-                                     'license': 1,
-                                     'muscles': [1, 2]})
+        response = self.client.post(
+            reverse('exercise:exercise:add'),
+            {'category': 2,
+             'name_original': 'my test exercise',
+             'license': 1,
+             'muscles': [1, 2]})
         count_after = Exercise.objects.count()
         self.assertIn(response.status_code, STATUS_CODES_FAIL)
 
@@ -252,7 +273,8 @@ class ExercisesTestCase(WorkoutManagerTestCase):
 
     def test_add_exercise_no_user(self):
         '''
-        Tests adding an exercise with a logged out (anonymous) user
+        Tests adding an exercise with a logged out
+        (anonymous) user
         '''
 
         self.user_logout()
@@ -261,22 +283,25 @@ class ExercisesTestCase(WorkoutManagerTestCase):
 
     def add_exercise_success(self, admin=False):
         '''
-        Tests adding/editing an exercise with a user with enough rights to do this
+        Tests adding/editing an exercise with a
+        user with enough rights to do this
         '''
 
         # Add an exercise
         count_before = Exercise.objects.count()
         description = 'a nice, long and accurate description for the exercise'
-        response = self.client.post(reverse('exercise:exercise:add'),
-                                    {'category': 2,
-                                     'name_original': 'my test exercise',
-                                     'license': 1,
-                                     'description': description,
-                                     'muscles': [1, 2]})
+        response = self.client.post(
+            reverse('exercise:exercise:add'),
+            {'category': 2,
+             'name_original': 'my test exercise',
+             'license': 1,
+             'description': description,
+             'muscles': [1, 2]})
         count_after = Exercise.objects.count()
         self.assertEqual(response.status_code, 302)
         new_location = response['Location']
-        self.assertEqual(count_before + 1, count_after, 'Exercise was not added')
+        self.assertEqual(count_before + 1, count_after,
+                         'Exercise was not added')
 
         response = self.client.get(new_location)
         exercise_id = response.context['exercise'].id
@@ -290,7 +315,8 @@ class ExercisesTestCase(WorkoutManagerTestCase):
             self.assertEqual(exercise.license_author, 'test')
             self.assertEqual(exercise.status, Exercise.STATUS_PENDING)
 
-        response = self.client.get(reverse('exercise:exercise:view', kwargs={'id': exercise_id}))
+        response = self.client.get(
+            reverse('exercise:exercise:view', kwargs={'id': exercise_id}))
         self.assertEqual(response.status_code, 200)
 
         # Navigation tab
@@ -300,38 +326,42 @@ class ExercisesTestCase(WorkoutManagerTestCase):
         self.assertEqual(exercise_1.name, 'my Test Exercise')
 
         # Wrong category - adding
-        response = self.client.post(reverse('exercise:exercise:add'),
-                                    {'category': 111,
-                                     'name_original': 'my test exercise',
-                                     'license': 1,
-                                     'muscles': [1, 2]})
+        response = self.client.post(
+            reverse('exercise:exercise:add'),
+            {'category': 111,
+             'name_original': 'my test exercise',
+             'license': 1,
+             'muscles': [1, 2]})
         self.assertTrue(response.context['form'].errors['category'])
 
         # Wrong category - editing
-        response = self.client.post(reverse('exercise:exercise:edit', kwargs={'pk': '1'}),
-                                    {'category': 111,
-                                     'name_original': 'my test exercise',
-                                     'license': 1,
-                                     'muscles': [1, 2]})
+        response = self.client.post(
+            reverse('exercise:exercise:edit', kwargs={'pk': '1'}),
+            {'category': 111,
+             'name_original': 'my test exercise',
+             'license': 1,
+             'muscles': [1, 2]})
         if admin:
             self.assertTrue(response.context['form'].errors['category'])
         else:
             self.assertIn(response.status_code, STATUS_CODES_FAIL)
 
         # No muscles - adding
-        response = self.client.post(reverse('exercise:exercise:add'),
-                                    {'category': 1,
-                                     'name_original': 'my test exercise',
-                                     'license': 1,
-                                     'muscles': []})
+        response = self.client.post(
+            reverse('exercise:exercise:add'),
+            {'category': 1,
+             'name_original': 'my test exercise',
+             'license': 1,
+             'muscles': []})
         self.assertFalse(response.context['form'].errors.get('muscles'))
 
         # No muscles - editing
-        response = self.client.post(reverse('exercise:exercise:edit', kwargs={'pk': '1'}),
-                                    {'category': 1,
-                                     'name_original': 'my test exercise',
-                                     'license': 1,
-                                     'muscles': []})
+        response = self.client.post(
+            reverse('exercise:exercise:edit', kwargs={'pk': '1'}),
+            {'category': 1,
+             'name_original': 'my test exercise',
+             'license': 1,
+             'muscles': []})
         if admin:
             self.assertFalse(response.context['form'].errors.get('muscles'))
         else:
@@ -339,14 +369,16 @@ class ExercisesTestCase(WorkoutManagerTestCase):
 
     def test_add_exercise_success(self):
         '''
-        Tests adding/editing an exercise with a user with enough rights to do this
+        Tests adding/editing an exercise with a
+        user with enough rights to do this
         '''
         self.user_login('admin')
         self.add_exercise_success(admin=True)
 
     def test_add_exercise_user_no_rights(self):
         '''
-        Tests adding an exercise with a user without enough rights to do this
+        Tests adding an exercise with a user
+        without enough rights to do this
         '''
         self.user_login('test')
         self.add_exercise_success(admin=False)
@@ -363,11 +395,14 @@ class ExercisesTestCase(WorkoutManagerTestCase):
         self.assertEqual(response.status_code, 200)
         result = json.loads(response.content.decode('utf8'))
         self.assertEqual(len(result), 1)
-        self.assertEqual(result['suggestions'][0]['value'], 'Very cool exercise')
+        self.assertEqual(result['suggestions'][0]
+                         ['value'], 'Very cool exercise')
         self.assertEqual(result['suggestions'][0]['data']['id'], 2)
-        self.assertEqual(result['suggestions'][0]['data']['category'], 'Another category')
+        self.assertEqual(result['suggestions'][0]['data']
+                         ['category'], 'Another category')
         self.assertEqual(result['suggestions'][0]['data']['image'], None)
-        self.assertEqual(result['suggestions'][0]['data']['image_thumbnail'], None)
+        self.assertEqual(result['suggestions'][0]
+                         ['data']['image_thumbnail'], None)
 
         # 0 hits, "Pending exercise"
         response = self.client.get(reverse('exercise-search'),
@@ -411,41 +446,69 @@ class ExercisesCacheTestCase(WorkoutManagerTestCase):
 
     def test_exercise_overview(self):
         '''
-        Test the exercise overview cache is correctly generated on visit
+        Test the exercise overview cache is correctly
+        generated on visit
         '''
         if self.is_mobile:
-            self.assertFalse(cache.get(get_template_cache_name('exercise-overview-mobile', 2)))
-            self.client.get(reverse('exercise:exercise:overview'))
-            self.assertTrue(cache.get(get_template_cache_name('exercise-overview-mobile', 2)))
+            self.assertFalse(
+                cache.get(get_template_cache_name(
+                    'exercise-overview-mobile', 2)))
+            self.client.get(reverse(
+                'exercise:exercise:overview'))
+            self.assertTrue(
+                cache.get(get_template_cache_name(
+                    'exercise-overview-mobile', 2)))
         else:
-            self.assertFalse(cache.get(get_template_cache_name('exercise-overview', 2)))
-            self.client.get(reverse('exercise:exercise:overview'))
-            self.assertTrue(cache.get(get_template_cache_name('exercise-overview', 2)))
+            self.assertFalse(
+                cache.get(get_template_cache_name(
+                    'exercise-overview', 2)))
+            self.client.get(reverse(
+                'exercise:exercise:overview'))
+            self.assertTrue(
+                cache.get(get_template_cache_name(
+                    'exercise-overview', 2)))
 
     def test_exercise_detail(self):
         '''
-        Test that the exercise detail cache is correctly generated on visit
+        Test that the exercise detail cache is
+        correctly generated on visit
         '''
 
     def test_overview_cache_update(self):
         '''
-        Test that the template cache for the overview is correctly reseted when
+        Test that the template cache for the overview
+        is correctly reseted when
         performing certain operations
         '''
-        self.assertFalse(cache.get(cache_mapper.get_exercise_muscle_bg_key(2)))
-        self.assertFalse(cache.get(get_template_cache_name('muscle-overview', 2)))
-        self.assertFalse(cache.get(get_template_cache_name('muscle-overview-mobile', 2)))
-        self.assertFalse(cache.get(get_template_cache_name('muscle-overview-search', 2)))
-        self.assertFalse(cache.get(get_template_cache_name('exercise-overview', 2)))
+        self.assertFalse(cache.get(
+            cache_mapper.get_exercise_muscle_bg_key(2)))
+        self.assertFalse(
+            cache.get(get_template_cache_name(
+                'muscle-overview', 2)))
+        self.assertFalse(
+            cache.get(get_template_cache_name(
+                'muscle-overview-mobile', 2)))
+        self.assertFalse(
+            cache.get(get_template_cache_name(
+                'muscle-overview-search', 2)))
+        self.assertFalse(
+            cache.get(get_template_cache_name(
+                'exercise-overview', 2)))
 
-        self.client.get(reverse('exercise:exercise:overview'))
-        self.client.get(reverse('exercise:exercise:view', kwargs={'id': 2}))
+        self.client.get(reverse(
+            'exercise:exercise:overview'))
+        self.client.get(reverse(
+            'exercise:exercise:view', kwargs={'id': 2}))
 
-        old_exercise_bg = cache.get(cache_mapper.get_exercise_muscle_bg_key(2))
-        old_muscle_overview = cache.get(get_template_cache_name('muscle-overview', 2))
-        old_exercise_overview = cache.get(get_template_cache_name('exercise-overview', 2))
-        old_exercise_overview_mobile = cache.get(get_template_cache_name('exercise-overview-mobile',
-                                                                         2))
+        old_exercise_bg = cache.get(
+            cache_mapper.get_exercise_muscle_bg_key(2))
+        old_muscle_overview = cache.get(
+            get_template_cache_name('muscle-overview', 2))
+        old_exercise_overview = cache.get(
+            get_template_cache_name('exercise-overview', 2))
+        old_exercise_overview_mobile = cache.get(
+            get_template_cache_name('exercise-overview-mobile',
+                                    2))
 
         exercise = Exercise.objects.get(pk=2)
         exercise.name = 'Very cool exercise 2'
@@ -453,27 +516,42 @@ class ExercisesCacheTestCase(WorkoutManagerTestCase):
         exercise.muscles_secondary.add(Muscle.objects.get(pk=2))
         exercise.save()
 
-        self.assertFalse(cache.get(cache_mapper.get_exercise_muscle_bg_key(2)))
-        self.assertFalse(cache.get(get_template_cache_name('muscle-overview', 2)))
-        self.assertFalse(cache.get(get_template_cache_name('exercise-overview', 2)))
-        self.assertFalse(cache.get(get_template_cache_name('exercise-overview-mobile', 2)))
+        self.assertFalse(cache.get(
+            cache_mapper.get_exercise_muscle_bg_key(2)))
+        self.assertFalse(
+            cache.get(get_template_cache_name(
+                'muscle-overview', 2)))
+        self.assertFalse(
+            cache.get(get_template_cache_name(
+                'exercise-overview', 2)))
+        self.assertFalse(
+            cache.get(get_template_cache_name(
+                'exercise-overview-mobile', 2)))
 
         self.client.get(reverse('exercise:exercise:overview'))
         self.client.get(reverse('exercise:muscle:overview'))
-        self.client.get(reverse('exercise:exercise:view', kwargs={'id': 2}))
+        self.client.get(reverse(
+            'exercise:exercise:view', kwargs={'id': 2}))
 
-        new_exercise_bg = cache.get(cache_mapper.get_exercise_muscle_bg_key(2))
-        new_muscle_overview = cache.get(get_template_cache_name('muscle-overview', 2))
-        new_exercise_overview = cache.get(get_template_cache_name('exercise-overview', 2))
-        new_exercise_overview_mobile = cache.get(get_template_cache_name('exercise-overview-mobile',
-                                                                         2))
+        new_exercise_bg = cache.get(
+            cache_mapper.get_exercise_muscle_bg_key(2))
+        new_muscle_overview = cache.get(
+            get_template_cache_name('muscle-overview', 2))
+        new_exercise_overview = cache.get(
+            get_template_cache_name('exercise-overview', 2))
+        new_exercise_overview_mobile = cache.get(
+            get_template_cache_name('exercise-overview-mobile',
+                                    2))
 
         if not self.is_mobile:
             self.assertNotEqual(old_exercise_bg, new_exercise_bg)
-            self.assertNotEqual(old_exercise_overview, new_exercise_overview)
-            self.assertNotEqual(old_muscle_overview, new_muscle_overview)
+            self.assertNotEqual(
+                old_exercise_overview, new_exercise_overview)
+            self.assertNotEqual(
+                old_muscle_overview, new_muscle_overview)
         else:
-            self.assertNotEqual(old_exercise_overview_mobile, new_exercise_overview_mobile)
+            self.assertNotEqual(old_exercise_overview_mobile,
+                                new_exercise_overview_mobile)
 
 
 class WorkoutCacheTestCase(WorkoutManagerTestCase):
@@ -489,10 +567,14 @@ class WorkoutCacheTestCase(WorkoutManagerTestCase):
         for set in exercise.set_set.all():
             set.exerciseday.training.canonical_representation
             workout_id = set.exerciseday.training_id
-            self.assertTrue(cache.get(cache_mapper.get_workout_canonical(workout_id)))
+            self.assertTrue(
+                cache.get(
+                    cache_mapper.get_workout_canonical(workout_id)))
 
             exercise.save()
-            self.assertFalse(cache.get(cache_mapper.get_workout_canonical(workout_id)))
+            self.assertFalse(
+                cache.get(
+                    cache_mapper.get_workout_canonical(workout_id)))
 
     def test_canonical_form_cache_delete(self):
         '''
@@ -505,11 +587,15 @@ class WorkoutCacheTestCase(WorkoutManagerTestCase):
             workout_id = set.exerciseday.training_id
             workout_ids.append(workout_id)
             set.exerciseday.training.canonical_representation
-            self.assertTrue(cache.get(cache_mapper.get_workout_canonical(workout_id)))
+            self.assertTrue(
+                cache.get(
+                    cache_mapper.get_workout_canonical(workout_id)))
 
         exercise.delete()
         for workout_id in workout_ids:
-            self.assertFalse(cache.get(cache_mapper.get_workout_canonical(workout_id)))
+            self.assertFalse(
+                cache.get(
+                    cache_mapper.get_workout_canonical(workout_id)))
 
 
 # TODO: fix test, all registered users can upload exercises

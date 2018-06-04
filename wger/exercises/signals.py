@@ -37,16 +37,19 @@ def delete_exercise_image_on_delete(sender, instance, **kwargs):
 
 
 @receiver(pre_save, sender=ExerciseImage)
-def delete_exercise_image_on_update(sender, instance, **kwargs):
+def delete_exercise_image_on_update(
+        sender, instance, **kwargs):
     '''
-    Delete the corresponding image from the filesystem when the an ExerciseImage
+    Delete the corresponding image from the
+    filesystem when the an ExerciseImage
     object was changed
     '''
     if not instance.pk:
         return False
 
     try:
-        old_file = ExerciseImage.objects.get(pk=instance.pk).image
+        old_file = ExerciseImage.objects.get(
+            pk=instance.pk).image
     except ExerciseImage.DoesNotExist:
         return False
 

@@ -59,7 +59,9 @@ class StepCreateView(WgerFormMixin, CreateView, PermissionRequiredMixin):
         '''
 
         class StepForm(ModelForm):
-            workout = ModelChoiceField(queryset=Workout.objects.filter(user=self.request.user))
+            workout = ModelChoiceField(
+                queryset=Workout.objects.filter(
+                    user=self.request.user))
 
             class Meta:
                 model = ScheduleStep
@@ -69,12 +71,15 @@ class StepCreateView(WgerFormMixin, CreateView, PermissionRequiredMixin):
 
     def get_context_data(self, **kwargs):
         context = super(StepCreateView, self).get_context_data(**kwargs)
-        context['form_action'] = reverse('manager:step:add',
-                                         kwargs={'schedule_pk': self.kwargs['schedule_pk']})
+        context['form_action'] = reverse(
+            'manager:step:add', kwargs={
+                'schedule_pk': self.kwargs['schedule_pk']})
         return context
 
     def get_success_url(self):
-        return reverse('manager:schedule:view', kwargs={'pk': self.kwargs['schedule_pk']})
+        return reverse(
+            'manager:schedule:view', kwargs={
+                'pk': self.kwargs['schedule_pk']})
 
     def form_valid(self, form):
         '''Set the schedule and the order'''
@@ -105,7 +110,9 @@ class StepEditView(WgerFormMixin, UpdateView, PermissionRequiredMixin):
         '''
 
         class StepForm(ModelForm):
-            workout = ModelChoiceField(queryset=Workout.objects.filter(user=self.request.user))
+            workout = ModelChoiceField(
+                queryset=Workout.objects.filter(
+                    user=self.request.user))
 
             class Meta:
                 model = ScheduleStep
@@ -114,7 +121,9 @@ class StepEditView(WgerFormMixin, UpdateView, PermissionRequiredMixin):
         return StepForm
 
     def get_success_url(self):
-        return reverse('manager:schedule:view', kwargs={'pk': self.object.schedule_id})
+        return reverse(
+            'manager:schedule:view', kwargs={
+                'pk': self.object.schedule_id})
 
 
 class StepDeleteView(WgerDeleteMixin, DeleteView, PermissionRequiredMixin):
@@ -128,7 +137,9 @@ class StepDeleteView(WgerDeleteMixin, DeleteView, PermissionRequiredMixin):
     messages = ugettext_lazy('Successfully deleted')
 
     def get_success_url(self):
-        return reverse('manager:schedule:view', kwargs={'pk': self.object.schedule.id})
+        return reverse(
+            'manager:schedule:view', kwargs={
+                'pk': self.object.schedule.id})
 
     def get_context_data(self, **kwargs):
         '''
@@ -136,5 +147,7 @@ class StepDeleteView(WgerDeleteMixin, DeleteView, PermissionRequiredMixin):
         '''
         context = super(StepDeleteView, self).get_context_data(**kwargs)
         context['title'] = _(u'Delete {0}?').format(self.object)
-        context['form_action'] = reverse('core:license:delete', kwargs={'pk': self.kwargs['pk']})
+        context['form_action'] = reverse(
+            'core:license:delete', kwargs={
+                'pk': self.kwargs['pk']})
         return context
