@@ -46,11 +46,15 @@ class Command(BaseCommand):
         if user:
             try:
                 profiles = UserProfile.objects.filter(created_by=str(username))
+                if profiles:
+                    self.stdout.write(self.style.SUCCESS(
+                        "These are the users created by: {0}".format(
+                            username)))
+                    for profile in profiles:
+                        self.stdout.write(
+                            "User: {0}".format(profile.user.username))
                 self.stdout.write(self.style.SUCCESS(
-                "These are the users created by: {0}".format(
-                    username)))
-                for profile in profiles:
-                    self.stdout.write("User: {0}".format(profile.user.username))
+                    "No users created by this user"))
             except UserProfile.DoesNotExist:
                 self.stdout.write(self.style.SUCCESS(
-                "No users created by this user"))   
+                    "No users created by this user"))
