@@ -71,9 +71,14 @@ class UserRegistrationFromApiViewSet(viewsets.ModelViewSet):
                                                     email=email,
                                                     password=password)
                 api_user.save()
-                api_user.userprofile.created_by = creator.user.username
-                api_user.is_from_api = True
-                api_user.userprofile.save()
+
+                # Pre-set some values of the user's profile
+                language = Language.objects.get(
+                    short_name=translation.get_language())
+                api_user.userprofile.notification_language = language
+
+                api_user.userprofile.created_by = str(self.request.user.username)
+                api_user.userprofile.is_from_api = True
 
                 language = Language.objects.get(
                     short_name=translation.get_language())
@@ -82,13 +87,15 @@ class UserRegistrationFromApiViewSet(viewsets.ModelViewSet):
                 # Set default gym, if needed
                 gym_config = GymConfig.objects.get(pk=1)
                 if gym_config.default_gym:
-                    api_user.userprofile.gym = gym_config.default_gym
+                    user.userprofile.gym = gym_config.default_gym
 
                     # Create gym user configuration object
                     config = GymUserConfig()
                     config.gym = gym_config.default_gym
-                    config.user = api_user
+                    config.user = user
                     config.save()
+
+                api_user.userprofile.save()
                 return Response({'message': 'User created successfully'}, status.HTTP_201_CREATED)
 
             return Response({'message': 'Email field is missing'},
