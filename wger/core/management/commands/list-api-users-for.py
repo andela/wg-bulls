@@ -44,13 +44,13 @@ class Command(BaseCommand):
             raise CommandError("Provide a valid username")
 
         if user:
-            profiles = UserProfile.objects.filter(created_by=user)
-
-        if profiles:
-            self.stdout.write(self.style.SUCCESS("These are the users created by: {0}"
-                                                 .format(username)))
-            for profile in profiles:
-                self.stdout.write("User: {0}".format(profile.user.username))
-        else:
-            self.stdout.write(self.style.SUCCESS(
-                "No users created by this user"))
+            try:
+                profiles = UserProfile.objects.filter(created_by=str(username))
+                self.stdout.write(self.style.SUCCESS(
+                "These are the users created by: {0}".format(
+                    username)))
+                for profile in profiles:
+                    self.stdout.write("User: {0}".format(profile.user.username))
+            except UserProfile.DoesNotExist:
+                self.stdout.write(self.style.SUCCESS(
+                "No users created by this user"))   
