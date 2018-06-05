@@ -89,20 +89,24 @@ def search(request):
     json_response = {}
 
     if q:
-        languages = load_item_languages(LanguageConfig.SHOW_ITEM_EXERCISES,
-                                        language_code=request.GET.get('language', None))
-        exercises = (Exercise.objects.filter(name__icontains=q)
-                     .filter(language__in=languages)
-                     .filter(status=Exercise.STATUS_ACCEPTED)
-                     .order_by('category__name', 'name')
-                     .distinct())
+        languages = load_item_languages(
+            LanguageConfig.SHOW_ITEM_EXERCISES,
+            language_code=request.GET.get(
+                'language', None))
+        exercises = (
+            Exercise.objects.filter(name__icontains=q)
+            .filter(language__in=languages)
+            .filter(status=Exercise.STATUS_ACCEPTED)
+            .order_by('category__name', 'name')
+            .distinct())
 
         for exercise in exercises:
             if exercise.main_image:
                 image_obj = exercise.main_image
                 image = image_obj.image.url
                 t = get_thumbnailer(image_obj.image)
-                thumbnail = t.get_thumbnail(aliases.get('micro_cropped')).url
+                thumbnail = t.get_thumbnail(
+                    aliases.get('micro_cropped')).url
             else:
                 image = None
                 thumbnail = None
@@ -149,7 +153,8 @@ class ExerciseImageViewSet(viewsets.ModelViewSet):
     '''
     queryset = ExerciseImage.objects.all()
     serializer_class = ExerciseImageSerializer
-    permission_classes = (IsAuthenticatedOrReadOnly, CreateOnlyPermission)
+    permission_classes = (
+        IsAuthenticatedOrReadOnly, CreateOnlyPermission)
     ordering_fields = '__all__'
     filter_fields = ('is_main',
                      'status',

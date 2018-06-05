@@ -27,7 +27,8 @@ from django.forms import (
 )
 from django.core.cache import cache
 from django.core.urlresolvers import reverse, reverse_lazy
-from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
+from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import permission_required
 from django.contrib import messages
 from django.template.loader import render_to_string
@@ -75,9 +76,11 @@ class ExerciseListView(ListView):
 
     def get_queryset(self):
         '''
-        Filter to only active exercises in the configured languages
+        Filter to only active exercises in
+        the configured languages
         '''
-        languages = load_item_languages(LanguageConfig.SHOW_ITEM_EXERCISES)
+        languages = load_item_languages(
+            LanguageConfig.SHOW_ITEM_EXERCISES)
         return Exercise.objects.accepted() \
             .filter(language__in=languages) \
             .order_by('category__id') \
@@ -87,7 +90,8 @@ class ExerciseListView(ListView):
         '''
         Pass additional data to the template
         '''
-        context = super(ExerciseListView, self).get_context_data(**kwargs)
+        context = super(ExerciseListView, self).\
+            get_context_data(**kwargs)
         context['show_shariff'] = True
         return context
 
@@ -105,28 +109,39 @@ def view(request, id, slug=None):
 
     template_data['exercise'] = exercise
 
-    # Create the backgrounds that show what muscles the exercise works on
-    backgrounds = cache.get(cache_mapper.get_exercise_muscle_bg_key(int(id)))
+    # Create the backgrounds that show what
+    # muscles the exercise works on
+    backgrounds = cache.get(
+        cache_mapper.
+        get_exercise_muscle_bg_key(int(id)))
     if not backgrounds:
         backgrounds_back = []
         backgrounds_front = []
 
         for muscle in exercise.muscles.all():
             if muscle.is_front:
-                backgrounds_front.append('images/muscles/main/muscle-%s.svg' % muscle.id)
+                backgrounds_front.append(
+                    'images/muscles/main/muscle-%s.svg' % muscle.id)
             else:
-                backgrounds_back.append('images/muscles/main/muscle-%s.svg' % muscle.id)
+                backgrounds_back.append(
+                    'images/muscles/main/muscle-%s.svg' % muscle.id)
 
         for muscle in exercise.muscles_secondary.all():
             if muscle.is_front:
-                backgrounds_front.append('images/muscles/secondary/muscle-%s.svg' % muscle.id)
+                backgrounds_front.append(
+                    'images/muscles/secondary/muscle-%s.svg' % muscle.id)
             else:
-                backgrounds_back.append('images/muscles/secondary/muscle-%s.svg' % muscle.id)
+                backgrounds_back.append(
+                    'images/muscles/secondary/muscle-%s.svg' % muscle.id)
 
-        # Append the "main" background, with the silhouette of the human body
-        # This has to happen as the last step, so it is rendered behind the muscles.
-        backgrounds_front.append('images/muscles/muscular_system_front.svg')
-        backgrounds_back.append('images/muscles/muscular_system_back.svg')
+        # Append the "main" background, with
+        # the silhouette of the human body
+        # This has to happen as the last step,
+        # so it is rendered behind the muscles.
+        backgrounds_front.append(
+            'images/muscles/muscular_system_front.svg')
+        backgrounds_back.append(
+            'images/muscles/muscular_system_back.svg')
         backgrounds = (backgrounds_front, backgrounds_back)
 
         cache.set(cache_mapper.get_exercise_muscle_bg_key(int(id)),
@@ -140,7 +155,8 @@ def view(request, id, slug=None):
     entry_log = []
     chart_data = []
     if request.user.is_authenticated():
-        logs = WorkoutLog.objects.filter(user=request.user, exercise=exercise)
+        logs = WorkoutLog.objects.filter(user=request.user,
+                                         exercise=exercise)
         entry_log, chart_data = process_log_entries(logs)
 
     template_data['logs'] = entry_log
@@ -152,7 +168,8 @@ def view(request, id, slug=None):
 
 class ExercisesEditAddView(WgerFormMixin):
     '''
-    Generic view to subclass from for exercise adding and editing, since they
+    Generic view to subclass from for exercise
+    adding and editing, since they
     share all this settings
     '''
     model = Exercise
@@ -163,19 +180,24 @@ class ExercisesEditAddView(WgerFormMixin):
 
     def get_form_class(self):
 
-        # Define the exercise form here because only at this point during the request
-        # have we access to the currently used language. In other places Django defaults
+        # Define the exercise form here because
+        # only at this point during the request
+        # have we access to the currently used
+        # language. In other places Django defaults
         # to 'en-us'.
         class ExerciseForm(ModelForm):
-            category = ModelChoiceField(queryset=ExerciseCategory.objects.all(),
-                                        widget=TranslatedSelect())
-            muscles = ModelMultipleChoiceField(queryset=Muscle.objects.all(),
-                                               widget=TranslatedOriginalSelectMultiple(),
-                                               required=False)
+            category = ModelChoiceField(
+                queryset=ExerciseCategory.objects.all(),
+                widget=TranslatedSelect())
+            muscles = ModelMultipleChoiceField(
+                queryset=Muscle.objects.all(),
+                widget=TranslatedOriginalSelectMultiple(),
+                required=False)
 
-            muscles_secondary = ModelMultipleChoiceField(queryset=Muscle.objects.all(),
-                                                         widget=TranslatedOriginalSelectMultiple(),
-                                                         required=False)
+            muscles_secondary = ModelMultipleChoiceField(
+                queryset=Muscle.objects.all(),
+                widget=TranslatedOriginalSelectMultiple(),
+                required=False)
 
             class Meta:
                 model = Exercise
@@ -205,14 +227,17 @@ class ExerciseUpdateView(ExercisesEditAddView,
     permission_required = 'exercises.change_exercise'
 
     def get_context_data(self, **kwargs):
-        context = super(ExerciseUpdateView, self).get_context_data(**kwargs)
-        context['form_action'] = reverse('exercise:exercise:edit', kwargs={'pk': self.object.id})
+        context = super(ExerciseUpdateView, self).\
+            get_context_data(**kwargs)
+        context['form_action'] = reverse(
+            'exercise:exercise:edit', kwargs={'pk': self.object.id})
         context['title'] = _(u'Edit {0}').format(self.object.name)
 
         return context
 
 
-class ExerciseAddView(ExercisesEditAddView, LoginRequiredMixin, CreateView):
+class ExerciseAddView(ExercisesEditAddView,
+                      LoginRequiredMixin, CreateView):
     '''
     Generic view to add a new exercise
     '''
@@ -234,52 +259,64 @@ class ExerciseAddView(ExercisesEditAddView, LoginRequiredMixin, CreateView):
         if request.user.userprofile.is_temporary:
             return HttpResponseForbidden()
 
-        return super(ExerciseAddView, self).dispatch(request, *args, **kwargs)
+        return super(ExerciseAddView, self).dispatch(
+            request, *args, **kwargs)
 
 
-class ExerciseCorrectView(ExercisesEditAddView, LoginRequiredMixin, UpdateView):
+class ExerciseCorrectView(ExercisesEditAddView,
+                          LoginRequiredMixin, UpdateView):
     '''
     Generic view to update an existing exercise
     '''
     sidebar = 'exercise/form_correct.html'
-    messages = _('Thank you. Once the changes are reviewed the exercise will be updated.')
+    messages = _(
+        'Thank you. Once the changes are reviewed' +
+        ' the exercise will be updated.')
 
     def dispatch(self, request, *args, **kwargs):
         '''
         Only registered users can correct exercises
         '''
-        if not request.user.is_authenticated() or request.user.userprofile.is_temporary:
+        if not request.user.is_authenticated() or \
+                request.user.userprofile.is_temporary:
             return HttpResponseForbidden()
 
-        return super(ExerciseCorrectView, self).dispatch(request, *args, **kwargs)
+        return super(ExerciseCorrectView, self).\
+            dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
-        context = super(ExerciseCorrectView, self).get_context_data(**kwargs)
-        context['form_action'] = reverse('exercise:exercise:correct', kwargs={'pk': self.object.id})
+        context = super(ExerciseCorrectView, self).\
+            get_context_data(**kwargs)
+        context['form_action'] = reverse(
+            'exercise:exercise:correct', kwargs={'pk': self.object.id})
         context['title'] = _(u'Correct {0}').format(self.object.name)
         return context
 
     def form_valid(self, form):
         '''
-        If the form is valid send email notifications to the site administrators.
+        If the form is valid send email notifications to
+        the site administrators.
 
         We don't return the super().form_valid because we don't want the data
         to be saved.
         '''
-        subject = 'Correction submitted for exercise #{0}'.format(self.get_object().pk)
+        subject = 'Correction submitted for exercise #{0}'.format(
+            self.get_object().pk)
         context = {
             'exercise': self.get_object(),
             'form_data': form.cleaned_data,
             'user': self.request.user
         }
-        message = render_to_string('exercise/email_correction.tpl', context)
+        message = render_to_string(
+            'exercise/email_correction.tpl', context)
         mail.mail_admins(six.text_type(subject),
                          six.text_type(message),
                          fail_silently=True)
 
         messages.success(self.request, self.messages)
-        return HttpResponseRedirect(reverse('exercise:exercise:view',
-                                            kwargs={'id': self.object.id}))
+        return HttpResponseRedirect(
+            reverse('exercise:exercise:view',
+                    kwargs={'id': self.object.id}))
 
 
 class ExerciseDeleteView(WgerDeleteMixin,
@@ -298,7 +335,8 @@ class ExerciseDeleteView(WgerDeleteMixin,
               'muscles_secondary',
               'equipment')
     success_url = reverse_lazy('exercise:exercise:overview')
-    delete_message = ugettext_lazy('This will delete the exercise from all workouts.')
+    delete_message = ugettext_lazy(
+        'This will delete the exercise from all workouts.')
     messages = ugettext_lazy('Successfully deleted')
     permission_required = 'exercises.delete_exercise'
 
@@ -306,7 +344,8 @@ class ExerciseDeleteView(WgerDeleteMixin,
         '''
         Send some additional data to the template
         '''
-        context = super(ExerciseDeleteView, self).get_context_data(**kwargs)
+        context = super(ExerciseDeleteView, self).\
+            get_context_data(**kwargs)
         context['title'] = _(u'Delete {0}?').format(self.object.name)
         context['form_action'] = reverse('exercise:exercise:delete',
                                          kwargs={'pk': self.kwargs['pk']})
@@ -314,7 +353,8 @@ class ExerciseDeleteView(WgerDeleteMixin,
         return context
 
 
-class PendingExerciseListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
+class PendingExerciseListView(LoginRequiredMixin,
+                              PermissionRequiredMixin, ListView):
     '''
     Generic view to list all weight units
     '''
@@ -334,13 +374,15 @@ class PendingExerciseListView(LoginRequiredMixin, PermissionRequiredMixin, ListV
 @permission_required('exercises.add_exercise')
 def accept(request, pk):
     '''
-    Accepts a pending user submitted exercise and emails the user, if possible
+    Accepts a pending user submitted exercise
+    and emails the user, if possible
     '''
     exercise = get_object_or_404(Exercise, pk=pk)
     exercise.status = Exercise.STATUS_ACCEPTED
     exercise.save()
     exercise.send_email(request)
-    messages.success(request, _('Exercise was successfully added to the general database'))
+    messages.success(request, _(
+        'Exercise was successfully added to the general database'))
 
     return HttpResponseRedirect(exercise.get_absolute_url())
 
@@ -353,5 +395,6 @@ def decline(request, pk):
     exercise = get_object_or_404(Exercise, pk=pk)
     exercise.status = Exercise.STATUS_DECLINED
     exercise.save()
-    messages.success(request, _('Exercise was successfully marked as rejected'))
+    messages.success(request, _(
+        'Exercise was successfully marked as rejected'))
     return HttpResponseRedirect(exercise.get_absolute_url())
