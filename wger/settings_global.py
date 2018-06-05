@@ -27,7 +27,6 @@ For a full list of options, visit:
 import os
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
-
 #
 # Application definition
 #
@@ -369,6 +368,6 @@ WGER_SETTINGS = {
     'ALLOW_GUEST_USERS': True,
     'EMAIL_FROM': 'wger Workout Manager <wger@example.com>',
     'TWITTER': False,
-    'FITBIT_CLIENT_ID': None,
-    'FITBIT_CLIENT_SECRET': None
+    'FITBIT_CLIENT_ID': True,
+    'FITBIT_CLIENT_SECRET': True
 }

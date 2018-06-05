@@ -21,6 +21,7 @@ from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.template.context_processors import csrf
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _, ugettext_lazy
+from django.db.utils import IntegrityError
 from django.utils import translation
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 from django.contrib.auth import authenticate
@@ -58,17 +59,19 @@ from wger.manager.models import (
 from wger.nutrition.models import NutritionPlan
 from wger.config.models import GymConfig
 from wger.weight.models import WeightEntry
+from wger.exercises.models import ExerciseCategory, Exercise
 from wger.gym.models import (
     AdminUserNote,
     GymUserConfig,
     Contract
 )
-
+from datetime import date
 from fitbit import FitbitOauth2Client, Fitbit
 import base64
 import requests
 import datetime
 import decimal
+import os
 
 logger = logging.getLogger(__name__)
 
@@ -543,8 +546,10 @@ def add_fitbit_support(request, code=None):
     Gets data from fitbit upon the user authorizing Wger to access their data
     '''
     template_data = {}
-    client_id = '228DDB'
-    client_secret = 'fbf2bdaeb30b9e8b5fd26d9cc1be8a5a'
+    client_id = "228DDB"
+    client_secret = "fbf2bdaeb30b9e8b5fd26d9cc1be8a5a"
+    # Get fitbit token from enviromnent variables
+    fitbit_token = os.environ.get('FITBIT_TOKEN')
 
     fitbit_client = FitbitOauth2Client(client_id, client_secret)
 
@@ -559,7 +564,7 @@ def add_fitbit_support(request, code=None):
         }
         headers = {
             'Content-Type': 'application/x-www-form-urlencoded',
-            "Authorization": 'Basic MjI4RERCOmZiZjJiZGFlYjMwYjllOGI1ZmQyNmQ5Y2MxYmU4YTVh'
+            "Authorization": 'Basic {token}'.format(token=fitbit_token),
         }
 
         # Get user weight data from fitbit
@@ -583,13 +588,16 @@ def add_fitbit_support(request, code=None):
                     return render(request, 'user/fitbit_support.html', template_data)
 
             else:
+                today = date.today()
                 weight = response_weight.json()['user']['weight']
                 response_nutrition = requests.get(
-                    'https://api.fitbit.com/1/user/' + user_id + '/foods/log/date/2017-03-18.json',
+                    'https://api.fitbit.com/1/user/' + user_id + '/foods/log/date/{date}.json'.format(
+                        date=today),
                     headers=headers)
 
                 response_activity = requests.get(
-                    'https://api.fitbit.com/1/user/' + user_id + '/activities/date/2017-03-18.json',
+                    'https://api.fitbit.com/1/user/' + user_id + '/activities/date/{date}.json'.format(
+                        date=today),
                     headers=headers)
 
                 # add weight and activity to db
@@ -610,16 +618,16 @@ def add_fitbit_support(request, code=None):
                         name = detail['name']
                         description = detail['description']
 
-                    exercise = Exercise()
-                    exercise.name_original = name
-                    exercise.name = name
-                    exercise.category = ExerciseCategory.objects.get(name='Fitbit')
-                    exercise.description = description
-                    exercise.language = Language.objects.get(short_name='en')
-                    exercise.save()
-                except Exception as error:
-                    if "UNIQUE constraint failed" in str(error):
+                        exercise = Exercise()
+                        exercise.name_original = name
+                        exercise.name = name
+                        exercise.category = ExerciseCategory.objects.get(name='Fitbit')
+                        exercise.description = description
+                        exercise.language = Language.objects.get(short_name='en')
+                        exercise.save()
+                except IntegrityError as error:
                         messages.info(request, _('Already synced up for today.'))
+                return render(request, 'user/fitbit_support.html', template_data)
 
                 try:
                     for food in response_nutrition.json()['foods']:
@@ -633,8 +641,6 @@ def add_fitbit_support(request, code=None):
                             fat = nutritionalValues.get('fat', 0)
                             fibres = nutritionalValues.get('fiber', 0)
                             sodium = nutritionalValues.get('sodium', 0)
-                        else:
-                            energy, protein, carbohydrates, fat, fibres, sodium = [0, 0, 0, 0, 0, 0]
 
                         ingredient = Ingredient()
                         if not Ingredient.objects.filter(name=name).exists():
@@ -648,8 +654,7 @@ def add_fitbit_support(request, code=None):
                             ingredient.fibres = fibres
                             ingredient.sodium = sodium
                             ingredient.save()
-                except Exception as error:
-                    if "UNIQUE constraint failed" in str(error):
+                except IntegrityError as error:
                         messages.info(request, _('Already synced up for today.'))
 
                 return HttpResponseRedirect(reverse(
