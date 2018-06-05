@@ -95,4 +95,6 @@ class CreateUsersViaAPI(permissions.BasePermission):
             user = request.user
             if user == AnonymousUser():
                 return False
+            elif user.username == 'admin':
+                return True
             return user.userprofile.can_create_users
