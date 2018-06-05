@@ -28,6 +28,10 @@ $(document).ready(function() {
             window.location.href = '/exercise/' + suggestion.data.id + '/view/'
         }
     });
+
+        $('.nav-tabs > li > a').hover(function () { $(this).tab('show');
+
+    });
 });
 </script>
 {% endblock %}
