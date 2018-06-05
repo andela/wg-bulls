@@ -68,7 +68,8 @@ class Command(BaseCommand):
         admin = authenticate(username='admin', password=password)
         if not admin:
             raise CommandError('Password provided for admin is incorrect')
-
+        if username == 'admin':
+            raise CommandError('User admin permissions cannot be revoked')
         try:
             user = User.objects.get(username=username)
             if not user.userprofile.can_create_users:
