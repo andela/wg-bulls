@@ -14,12 +14,8 @@
 #
 # You should have received a copy of the GNU Affero General Public License
 
-
-from django.db.models.signals import post_save, post_delete
-
 from wger.gym.helpers import get_user_last_activity
-from wger.manager.models import WorkoutLog, WorkoutSession
-from wger.core.models import UserCache
+
 
 
 def update_activity_cache(sender, instance, **kwargs):
@@ -32,8 +28,8 @@ def update_activity_cache(sender, instance, **kwargs):
     user.usercache.save()
 
 
-post_save.connect(update_activity_cache, sender=WorkoutSession)
-post_save.connect(update_activity_cache, sender=WorkoutLog)
+# post_save.connect(update_activity_cache, sender=WorkoutSession)
+# post_save.connect(update_activity_cache, sender=WorkoutLog)
 
 # TODO: this seems to cause problems when users are deleted
 #       perhaps because of the cascading, needs to be checked

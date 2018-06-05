@@ -40,6 +40,7 @@ class UserLoginForm(AuthenticationForm):
 
 
 class UserPreferencesForm(forms.ModelForm):
+
     class Meta:
         model = UserProfile
         fields = ('show_comments',
@@ -56,9 +57,11 @@ class UserPreferencesForm(forms.ModelForm):
 
 
 class UserEmailForm(forms.ModelForm):
-    email = EmailField(label=_("Email"),
-                       help_text=_("Used for password resets and, optionally, email reminders."),
-                       required=False)
+    email = EmailField(
+        label=_("Email"),
+        help_text=_(
+            "Used for password resets and, optionally, email reminders."),
+        required=False)
 
     class Meta:
         model = User
@@ -68,9 +71,12 @@ class UserEmailForm(forms.ModelForm):
         '''
         Email must be unique system wide
 
-        However, this check should only be performed when the user changes his
-        email, otherwise the uniqueness check will because it will find one user
-        (the current one) using the same email. Only when the user changes it, do
+        However, this check should only be
+        performed when the user changes his
+        email, otherwise the uniqueness check
+        will because it will find one user
+        (the current one) using the same email.
+        Only when the user changes it, do
         we want to check that nobody else has that email
         '''
 
@@ -128,13 +134,17 @@ class RegistrationForm(UserCreationForm, UserEmailForm):
     Registration form
     '''
 
-    # Manually set the language to 'en', otherwise the language used seems to
-    # randomly one of the application languages. This also appears to happen
-    # only on wger.de, perhaps because there the application is behind a reverse
+    # Manually set the language to 'en',
+    # otherwise the language used seems to
+    # randomly one of the application languages.
+    # This also appears to happen
+    # only on wger.de, perhaps because there
+    # the application is behind a reverse
     # proxy. See  #281.
-    captcha = ReCaptchaField(attrs={'theme': 'clean', 'lang': 'en'},
-                             label=_('Confirmation text'),
-                             help_text=_('As a security measure, please enter the previous words'))
+    captcha = ReCaptchaField(
+        attrs={'theme': 'clean', 'lang': 'en'},
+        label=_('Confirmation text'),
+        help_text=_('As a security measure, please enter the previous words'))
 
 
 class RegistrationFormNoCaptcha(UserCreationForm, UserEmailForm):
@@ -152,24 +162,28 @@ class FeedbackRegisteredForm(forms.Form):
     '''
     Feedback form used for logged in users
     '''
-    contact = forms.CharField(max_length=50,
-                              min_length=10,
-                              label=_('Contact'),
-                              help_text=_('Some way of answering you (email, etc.)'),
-                              required=False)
+    contact = forms.CharField(
+        max_length=50,
+        min_length=10,
+        label=_('Contact'),
+        help_text=_(
+            'Some way of answering you (email, etc.)'),
+        required=False)
 
-    comment = forms.CharField(max_length=500,
-                              min_length=10,
-                              widget=widgets.Textarea,
-                              label=_('Comment'),
-                              help_text=_('What do you want to say?'),
-                              required=True)
+    comment = forms.CharField(
+        max_length=500,
+        min_length=10,
+        widget=widgets.Textarea,
+        label=_('Comment'),
+        help_text=_('What do you want to say?'),
+        required=True)
 
 
 class FeedbackAnonymousForm(FeedbackRegisteredForm):
     '''
     Feedback form used for anonymous users (has additionally a reCaptcha field)
     '''
-    captcha = ReCaptchaField(attrs={'theme': 'clean'},
-                             label=_('Confirmation text'),
-                             help_text=_('As a security measure, please enter the previous words'),)
+    captcha = ReCaptchaField(
+        attrs={'theme': 'clean'},
+        label=_('Confirmation text'),
+        help_text=_('As a security measure, please enter the previous words'),)
