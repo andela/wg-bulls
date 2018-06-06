@@ -638,7 +638,7 @@ def add_fitbit_support(request, code=None):
                 if "errors" in find_error:
                     messages.info(request, _('Make sure the profile is checked.'))
                     template_data['fitbit_auth_link'] = fitbit_client.authorize_token_url(
-                        redirect_uri=reverse('core:user:fitbit'),
+                        redirect_uri='http://127.0.0.1:8000/en/user/add_fitbit',
                         prompt='consent')[0]
                     return render(request, 'user/fitbit_support.html', template_data)
 
