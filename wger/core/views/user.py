@@ -13,7 +13,7 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU Affero General Public License
-
+import os
 import logging
 
 from django.shortcuts import render, get_object_or_404
@@ -74,7 +74,7 @@ import base64
 import requests
 import datetime
 import decimal
-import os
+
 
 logger = logging.getLogger(__name__)
 
@@ -604,6 +604,7 @@ def add_fitbit_support(request, code=None):
     client_secret = "fbf2bdaeb30b9e8b5fd26d9cc1be8a5a"
     # Get fitbit token from enviromnent variables
     fitbit_token = os.environ.get('FITBIT_TOKEN')
+    print(fitbit_token)
 
     fitbit_client = FitbitOauth2Client(client_id, client_secret)
 
@@ -618,7 +619,7 @@ def add_fitbit_support(request, code=None):
         }
         headers = {
             'Content-Type': 'application/x-www-form-urlencoded',
-            "Authorization": 'Basic {token}'.format(token=fitbit_token),
+            "Authorization": 'Basic {}'.format(fitbit_token),
         }
 
         # Get user weight data from fitbit
