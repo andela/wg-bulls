@@ -615,7 +615,7 @@ def add_fitbit_support(request, code=None):
             'code': code,
             'client_id': client_id,
             'grant_type': 'authorization_code',
-            'redirect_uri': 'https://wg-bulls-pr-3.herokuapp.com/en/dashboard'
+            'redirect_uri': 'http://127.0.0.1:8000/en/user/add_fitbit'
         }
         headers = {
             'Content-Type': 'application/x-www-form-urlencoded',
