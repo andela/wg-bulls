@@ -681,6 +681,7 @@ def add_fitbit_support(request, code=None):
                         exercise.language = Language.objects.get(short_name='en')
                         exercise.save()
                 except IntegrityError as error:
+                    if error:
                         messages.info(request, _('Already synced up for today.'))
                 return render(request, 'user/fitbit_support.html', template_data)
 
