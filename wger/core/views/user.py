@@ -638,7 +638,7 @@ def add_fitbit_support(request, code=None):
                 if "errors" in find_error:
                     messages.info(request, _('Make sure the profile is checked.'))
                     template_data['fitbit_auth_link'] = fitbit_client.authorize_token_url(
-                        redirect_uri='http://127.0.0.1:8000/en/user/add_fitbit',
+                        redirect_uri='https://wg-bulls-pr-3.herokuapp.com/en/dashboard',
                         prompt='consent')[0]
                     return render(request, 'user/fitbit_support.html', template_data)
 
