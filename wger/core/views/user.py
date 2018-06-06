@@ -600,8 +600,8 @@ def add_fitbit_support(request, code=None):
     Gets data from fitbit upon the user authorizing Wger to access their data
     '''
     template_data = {}
-    client_id = "228DDB"
-    client_secret = "fbf2bdaeb30b9e8b5fd26d9cc1be8a5a"
+    client_id = "22CTVC"
+    client_secret = "a464510ddfbdb6f693948702ea27e6ce"
     # Get fitbit token from enviromnent variables
     fitbit_token = os.environ.get('FITBIT_TOKEN')
     print(fitbit_token)
