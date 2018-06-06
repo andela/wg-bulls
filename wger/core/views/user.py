@@ -720,5 +720,5 @@ def add_fitbit_support(request, code=None):
 
     # link to page that makes user authorize wger to access their fitbit
     template_data['fitbit_auth_link'] = fitbit_client.authorize_token_url(
-        redirect_uri='https://wg-bulls-pr-3.herokuapp.com/en/dashboard', prompt='consent')[0]
+        redirect_uri='http://127.0.0.1:8000/en/user/add_fitbit', prompt='consent')[0]
     return render(request, 'user/fitbit_support.html', template_data)
