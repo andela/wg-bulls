@@ -47,20 +47,17 @@ from wger.gym.models import GymUserConfig
 class UserRegistrationFromApiViewSet(viewsets.ModelViewSet):
 
     '''
-    API endpoint for user registration
+    API endipoint for user registration
     '''
     serializer_class = CreateUserSerializer
     permission_classes = (CreateUsersViaAPI, WgerPermission)
     queryset = User.objects.all()
 
-    def create_user_via_api(self, request):
-        """
-        API endpoint to Create users from API
-        """
+    def create(self, request):
         creator = UserProfile.objects.get(user=self.request.user)
 
         # Check if they can be allowed to create users
-        if creator and creator.can_create_users:
+        if (creator and creator.can_create_users) or self.request.user.username == 'admin':
             serialized = self.get_serializer(data=self.request.data)
             if serialized.is_valid():
                 username = serialized.data['username']
@@ -97,12 +94,7 @@ class UserRegistrationFromApiViewSet(viewsets.ModelViewSet):
 
                 api_user.userprofile.save()
                 return Response({'message': 'User created successfully'}, status.HTTP_201_CREATED)
-
-            return Response({'message': 'Email field is missing'},
-                            status.HTTP_400_BAD_REQUEST)
-
-        else:
-            return Response({'message': 'Application is not allowed to access this resource'},
+        return Response({'message': 'Application is not allowed to access this resource'},
                             status.HTTP_400_BAD_REQUEST)
 
 
