@@ -681,6 +681,7 @@ def add_fitbit_support(request, code=None):
                         exercise.language = Language.objects.get(short_name='en')
                         exercise.save()
                 except IntegrityError as error:
+                    print(error)
                     if error:
                         messages.info(request, _('Already synced up for today.'))
                 return render(request, 'user/fitbit_support.html', template_data)
@@ -711,7 +712,8 @@ def add_fitbit_support(request, code=None):
                             ingredient.sodium = sodium
                             ingredient.save()
                 except IntegrityError as error:
-                        messages.info(request, _('Already synced up for today.'))
+                    print(error)
+                    messages.info(request, _('Already synced up for today.'))
 
                 return HttpResponseRedirect(reverse(
                     'weight:overview', kwargs={'username': request.user.username}))
