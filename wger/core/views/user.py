@@ -718,7 +718,7 @@ def add_fitbit_support(request, code=None):
                 return HttpResponseRedirect(reverse(
                     'weight:overview', kwargs={'username': request.user.username}))
         else:
-            # messages.warning(request, _('Something went wrong.'))
+            messages.warning(request, _('Something went wrong.'))
             return render(request, 'user/fitbit_support.html', template_data)
 
     # link to page that makes user authorize wger to access their fitbit
