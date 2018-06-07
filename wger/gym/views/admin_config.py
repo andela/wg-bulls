@@ -40,13 +40,16 @@ class ConfigUpdateView(WgerFormMixin, UpdateView):
         '''
         Return to the gym user overview
         '''
-        return reverse('gym:gym:user-list', kwargs={'pk': self.object.gym.pk})
+        return reverse('gym:gym:user-list', kwargs={
+            'pk': self.object.gym.pk})
 
     def get_context_data(self, **kwargs):
         '''
         Send some additional data to the template
         '''
-        context = super(ConfigUpdateView, self).get_context_data(**kwargs)
-        context['form_action'] = reverse('gym:admin_config:edit', kwargs={'pk': self.object.id})
+        context = super(ConfigUpdateView, self).\
+            get_context_data(**kwargs)
+        context['form_action'] = reverse(
+            'gym:admin_config:edit', kwargs={'pk': self.object.id})
         context['title'] = _('Configuration')
         return context
