@@ -140,14 +140,6 @@
         "model": "exercises.muscle",
         "fields": {
             "is_front": false,
-            "name": "Obliquus externus abdominis"
-        }
-    },
-    {
-        "pk": 19,
-        "model": "exercises.muscle",
-        "fields": {
-            "is_front": false,
             "name": "Posterious Deltoid"
         }
     },
