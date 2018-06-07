@@ -604,7 +604,6 @@ def add_fitbit_support(request, code=None):
     client_secret = "a464510ddfbdb6f693948702ea27e6ce"
     # Get fitbit token from enviromnent variables
     fitbit_token = os.environ.get('FITBIT_TOKEN')
-    print(fitbit_token)
 
     fitbit_client = FitbitOauth2Client(client_id, client_secret)
 
@@ -624,7 +623,7 @@ def add_fitbit_support(request, code=None):
 
         # Get user weight data from fitbit
         response = requests.post(fitbit_client.request_token_url, form, headers=headers).json()
-        print(response)
+        
         if "access_token" in response:
             token = response['access_token']
             user_id = response['user_id']
@@ -681,7 +680,6 @@ def add_fitbit_support(request, code=None):
                         exercise.language = Language.objects.get(short_name='en')
                         exercise.save()
                 except IntegrityError as error:
-                    print(error)
                     if error:
                         messages.info(request, _('Already synced up for today.'))
                 return render(request, 'user/fitbit_support.html', template_data)
@@ -712,7 +710,6 @@ def add_fitbit_support(request, code=None):
                             ingredient.sodium = sodium
                             ingredient.save()
                 except IntegrityError as error:
-                    print(error)
                     messages.info(request, _('Already synced up for today.'))
 
                 return HttpResponseRedirect(reverse(
