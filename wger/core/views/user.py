@@ -615,7 +615,7 @@ def add_fitbit_support(request, code=None):
             'code': code,
             'client_id': client_id,
             'grant_type': 'authorization_code',
-            'redirect_uri': 'https://wg-bulls-pr-3.herokuapp.com/en/user/add_fitbit'
+            'redirect_uri': 'https://wg-bulls.herokuapp.com/en/user/add_fitbit'
         }
         headers = {
             'Content-Type': 'application/x-www-form-urlencoded',
@@ -624,7 +624,7 @@ def add_fitbit_support(request, code=None):
 
         # Get user weight data from fitbit
         response = requests.post(fitbit_client.request_token_url, form, headers=headers).json()
-
+        print(response)
         if "access_token" in response:
             token = response['access_token']
             user_id = response['user_id']
@@ -638,7 +638,7 @@ def add_fitbit_support(request, code=None):
                 if "errors" in find_error:
                     messages.info(request, _('Make sure the profile is checked.'))
                     template_data['fitbit_auth_link'] = fitbit_client.authorize_token_url(
-                        redirect_uri='https://wg-bulls-pr-3.herokuapp.com/en/user/add_fitbit',
+                        redirect_uri='https://wg-bulls.herokuapp.com/en/user/add_fitbit',
                         prompt='consent')[0]
                     return render(request, 'user/fitbit_support.html', template_data)
 
@@ -723,6 +723,6 @@ def add_fitbit_support(request, code=None):
 
     # link to page that makes user authorize wger to access their fitbit
     template_data['fitbit_auth_link'] = fitbit_client.authorize_token_url(
-        redirect_uri='https://wg-bulls-pr-3.herokuapp.com/en/user/add_fitbit', prompt='consent')[0]
+        redirect_uri='https://wg-bulls.herokuapp.com/en/user/add_fitbit', prompt='consent')[0]
     
     return render(request, 'user/fitbit_support.html', template_data)
