@@ -23,6 +23,7 @@ from wger.weight.models import WeightEntry
 
 
 class EmailWeightReminderTestCase(WorkoutManagerTestCase):
+
     def test_without_email(self):
         user = User.objects.get(pk=2)
         user.email = ''

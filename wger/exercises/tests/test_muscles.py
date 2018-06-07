@@ -36,7 +36,8 @@ class MuscleRepresentationTestCase(WorkoutManagerTestCase):
         '''
         Test that the representation of an object is correct
         '''
-        self.assertEqual("{0}".format(Muscle.objects.get(pk=1)), 'Anterior testoid')
+        self.assertEqual("{0}".format(
+            Muscle.objects.get(pk=1)), 'Anterior testoid')
 
 
 class MuscleAdminOverviewTest(WorkoutManagerAccessTestCase):
@@ -119,13 +120,18 @@ class MuscleCacheTestCase(WorkoutManagerTestCase):
 
     def test_overview(self):
         '''
-        Test the muscle overview cache is correctly generated on visit
+        Test the muscle overview cache is correctly
+        generated on visit
         '''
 
         if not self.is_mobile:
-            self.assertFalse(cache.get(get_template_cache_name('muscle-overview', 2)))
-            self.client.get(reverse('exercise:muscle:overview'))
-            self.assertTrue(cache.get(get_template_cache_name('muscle-overview', 2)))
+            self.assertFalse(cache.get(
+                get_template_cache_name('muscle-overview', 2)))
+            self.client.get(
+                reverse('exercise:muscle:overview'))
+            self.assertTrue(
+                cache.get(get_template_cache_name(
+                    'muscle-overview', 2)))
 
 
 class MuscleOverviewTestCase(WorkoutManagerAccessTestCase):

@@ -393,8 +393,8 @@ class Ingredient(AbstractLicenseModel, models.Model):
         if isinstance(other, self.__class__):
             for i in self._meta.fields:
                 if (hasattr(self, i.name) and hasattr(other, i.name) and
-                   (getattr(self, i.name, None) != getattr(other, i.name, None))):
-                        equal = False
+                        (getattr(self, i.name, None) != getattr(other, i.name, None))):
+                    equal = False
         else:
             equal = False
         return equal

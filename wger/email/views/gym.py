@@ -43,7 +43,8 @@ class EmailLogListView(PermissionRequiredMixin, generic.ListView):
         '''
         Can only view emails for own gym
         '''
-        self.gym = get_object_or_404(Gym, pk=self.kwargs['gym_pk'])
+        self.gym = get_object_or_404(Gym,
+                                     pk=self.kwargs['gym_pk'])
         return Log.objects.filter(gym=self.gym)
 
     def dispatch(self, request, *args, **kwargs):
@@ -53,16 +54,19 @@ class EmailLogListView(PermissionRequiredMixin, generic.ListView):
         if not request.user.is_authenticated():
             return HttpResponseForbidden()
 
-        if request.user.userprofile.gym_id != int(self.kwargs['gym_pk']):
+        if request.user.userprofile.gym_id != int(
+                self.kwargs['gym_pk']):
             return HttpResponseForbidden()
 
-        return super(EmailLogListView, self).dispatch(request, *args, **kwargs)
+        return super(EmailLogListView, self).dispatch(
+            request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         '''
         Pass additional data to the template
         '''
-        context = super(EmailLogListView, self).get_context_data(**kwargs)
+        context = super(EmailLogListView, self).\
+            get_context_data(**kwargs)
         context['gym'] = self.gym
         return context
 
@@ -83,18 +87,22 @@ class EmailListFormPreview(FormPreview):
         '''
         Context for template rendering
 
-        Also, check for permissions here. While it is ugly and doesn't really
-        belong here, it seems it's the best way to do it in a FormPreview
+        Also, check for permissions here.
+        While it is ugly and doesn't really
+        belong here, it seems it's the best
+        way to do it in a FormPreview
         '''
         if not request.user.is_authenticated() or\
                 request.user.userprofile.gym_id != self.gym.id or \
                 not request.user.has_perms('core.change_emailcron'):
             return HttpResponseForbidden()
 
-        context = super(EmailListFormPreview, self).get_context(request, form)
+        context = super(EmailListFormPreview, self).\
+            get_context(request, form)
         context['gym'] = self.gym
-        context['form_action'] = reverse('email:email:add-gym',
-                                         kwargs={'gym_pk': self.gym.pk})
+        context['form_action'] = reverse(
+            'email:email:add-gym',
+            kwargs={'gym_pk': self.gym.pk})
 
         return context
 
@@ -113,7 +121,8 @@ class EmailListFormPreview(FormPreview):
 
     def done(self, request, cleaned_data):
         '''
-        Collect appropriate emails and save to database to send for later
+        Collect appropriate emails and save to
+        database to send for later
         '''
         emails = []
 
@@ -134,6 +143,8 @@ class EmailListFormPreview(FormPreview):
         email_log.save()
 
         # ...and bulk create cron entries
-        CronEntry.objects.bulk_create([CronEntry(log=email_log, email=email) for email in emails])
+        CronEntry.objects.bulk_create(
+            [CronEntry(log=email_log, email=email) for email in emails])
 
-        return HttpResponseRedirect(reverse('gym:gym:user-list', kwargs={'pk': self.gym.pk}))
+        return HttpResponseRedirect(
+            reverse('gym:gym:user-list', kwargs={'pk': self.gym.pk}))
