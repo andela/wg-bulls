@@ -22,5 +22,5 @@ class CoreConfig(AppConfig):
     verbose_name = "Core"
 
     def ready(self):
-        import wger.config.signals
+        import wger.core.signals
         pass
