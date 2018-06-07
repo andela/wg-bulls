@@ -10,6 +10,9 @@
 
     {% with username=owner_user.username %}
         <meta property="og:description" content="{% blocktrans %}wger Workout Manager is a free, open source web application that manages your exercises and workouts. {% endblocktrans %}">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">   
+        <link href="https://fonts.googleapis.com/css?family=Indie+Flower|Jua" rel="stylesheet">
+
     {% endwith %}
 {% endblock %}
 
@@ -21,11 +24,9 @@
     <header>
         <div class="container">
             <div class="intro-text">
-                <div class="intro-heading">{% trans "Welcome to wger" %}</div>
-                <div class="intro-lead-in">{% trans "Your body." %}</div>
-                <div class="intro-lead-in">{% trans "Your workouts." %}</div>
-                <div class="intro-lead-in">{% trans "Your data." %}</div>
-                <div class="intro-lead-in">{% trans "Your progress." %}</div>
+                <div class="intro-heading">{% trans "wger Workout Manager" %}</div>
+                <hr class="horizontal-line">
+                <div class="intro-lead-in">{% trans "Manage all aspects of your personal training with wger all-in-one software." %}</div>
                 {% if allow_guest_users and not user.is_authenticated %}
                     <a href="{% url 'core:user:demo-entries' %}" class="page-scroll btn btn-xl" rel="nofollow" style="margin-top: 1em;">
                         {% trans "Try it now" %}
@@ -48,7 +49,7 @@
     </header>
 
     <!-- Services Section -->
-    <section id="services" class="bg-darkest-gray">
+    <section id="services" class="bg-darkest-yellow">
         <div class="container">
             <div class="row">
                 <div class="col-lg-12 text-center">
@@ -64,7 +65,7 @@
                 </div>
             </div>
             <div class="row text-center">
-                <div class="col-md-4">
+                <div class="col-md-4 wger-card">
                     <span class="fa-stack fa-4x">
                         <i class="fa fa-circle fa-stack-2x text-primary"></i>
                         <i class="fa fa-user fa-stack-1x fa-inverse"></i>
@@ -79,7 +80,7 @@
                         {% endblocktrans %}
                     </p>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-4 wger-card">
                     <span class="fa-stack fa-4x">
                         <i class="fa fa-circle fa-stack-2x text-primary"></i>
                         <i class="fa fa-cutlery fa-stack-1x fa-inverse"></i>
@@ -94,7 +95,7 @@
                         {% endblocktrans %}
                     </p>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-4 wger-card">
                     <span class="fa-stack fa-4x">
                         <i class="fa fa-circle fa-stack-2x text-primary"></i>
                         <i class="fa fa-line-chart fa-stack-1x fa-inverse"></i>
@@ -113,7 +114,7 @@
         </div>
     </section>
 
-    <section id="about" class="bg-light-gray">
+    <section id="about" class="bg-light-blue">
         <div class="container">
             <div class="row">
                 <div class="col-lg-12 text-center">
@@ -130,16 +131,16 @@
                             </div>
                             <div class="timeline-panel">
                                 <div class="timeline-heading">
-                                    <h4>{% trans "Weight tracker" %}</h4>
+                                    <h4 class="sub_heading">{% trans "Weight tracker" %}</h4>
                                 </div>
                                 <div class="timeline-body">
-                                    <p class="text-muted">
+                                    <blockquote class="text-muted">
                                         {% blocktrans trimmed %}
                                             Keep track of your progress with the body weight chart. This makes
                                             it easy to see if you are reaching your goals or need to adjust
                                             something.
                                         {% endblocktrans %}
-                                    </p>
+                                    </blockquote>
                                 </div>
                             </div>
                         </li>
@@ -149,16 +150,16 @@
                             </div>
                             <div class="timeline-panel">
                                 <div class="timeline-heading">
-                                    <h4>{% trans 'Calendar' %}</h4>
+                                    <h4 class="sub_heading">{% trans 'Calendar' %}</h4>
                                 </div>
                                 <div class="timeline-body">
-                                    <p class="text-muted">
+                                    <blockquote class="text-muted">
                                         {% blocktrans trimmed %}
                                             Get an overview of how and when you trained as well as how you
                                             personally felt you performed. Access all your individual diary
                                             entries with one click.
                                         {% endblocktrans %}
-                                    </p>
+                                    </blockquote>
                                 </div>
                             </div>
                         </li>
@@ -168,16 +169,16 @@
                             </div>
                             <div class="timeline-panel">
                                 <div class="timeline-heading">
-                                    <h4>{% trans 'Exercise database' %}</h4>
+                                    <h4 class="sub_heading">{% trans 'Exercise database' %}</h4>
                                 </div>
                                 <div class="timeline-body">
-                                    <p class="text-muted">
+                                    <blockquote class="text-muted">
                                         {% blocktrans trimmed %}
                                             The exercise database contains more than hundred exercises from
                                             which you can choose when creating a workout. You can view them by
                                             category and equipment used or muscles trained.
                                         {% endblocktrans %}
-                                    </p>
+                                    </blockquote>
                                 </div>
                             </div>
                         </li>
@@ -187,16 +188,16 @@
                             </div>
                             <div class="timeline-panel">
                                 <div class="timeline-heading">
-                                    <h4>{% trans 'Gym management' %}</h4>
+                                    <h4 class="sub_heading">{% trans 'Gym management' %}</h4>
                                 </div>
                                 <div class="timeline-body">
-                                    <p class="text-muted">
+                                    <blockquote class="text-muted">
                                         {% blocktrans trimmed %}
                                             Use the application for your gym to manage its members, their
                                             workouts and attendance. You can manage the members' contracts,
                                             keep notes and upload any files you might need.
                                         {% endblocktrans %}
-                                    </p>
+                                    </blockquote>
                                 </div>
                             </div>
                         </li>
@@ -206,21 +207,21 @@
                             </div>
                             <div class="timeline-panel">
                                 <div class="timeline-heading">
-                                    <h4>{% trans "REST API" %}</h4>
+                                    <h4 class="sub_heading">{% trans "REST API" %}</h4>
                                 </div>
                                 <div class="timeline-body">
-                                    <p class="text-muted">
+                                    <blockquote class="text-muted">
                                         {% blocktrans trimmed %}
                                             wger provides a REST API with full read and write access to all
                                             data so you can integrate your own application and tools.
                                         {% endblocktrans %}
-                                    </p>
+                                    </blockquote>
                                 </div>
                             </div>
                         </li>
                         <li class="timeline">
                             <div class="timeline-image">
-                                <h4>{% blocktrans trimmed %}100% Free
+                                <h4 class="sub_heading">{% blocktrans trimmed %}100% Free
                                     <br>and
                                     <br>Open Source{% endblocktrans %}
                                 </h4>
