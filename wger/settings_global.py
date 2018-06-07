@@ -203,6 +203,7 @@ STATICFILES_FINDERS = (
 #
 # Email
 #
+
 EMAIL_SUBJECT_PREFIX = '[wger] '
 # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
@@ -214,6 +215,9 @@ LOGIN_URL = '/user/login'
 LOGIN_REDIRECT_URL = '/'
 
 # Twitter social-auth settings
+
+SOCIAL_AUTH_REDIRECT_IS_HTTPS = True
+
 SOCIAL_AUTH_TWITTER_KEY = os.environ.get("SOCIAL_TWITTER_KEY")
 SOCIAL_AUTH_TWITTER_SECRET = os.environ.get("SOCIAL_TWITTER_SECRET")
 
