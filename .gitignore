@@ -64,7 +64,4 @@ wger/core/static/bower_components
 node_modules
 
 #Virtualenv folder
->>>>>>> e8bf7bcdf9c3d3f11c495afca494f594b46528a5
 venv-django/*
-# Migrations folders
-wger/*/migrations/*
