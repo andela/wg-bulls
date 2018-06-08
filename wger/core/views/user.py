@@ -118,7 +118,6 @@ def delete(request, user_pk=None):
             not request.user.has_perm('gym.manage_gym')
                 or request.user.userprofile.gym_id != user.userprofile.gym_id
                 or user.has_perm('gym.manage_gym')
-                or user.has_perm('gym.gym_trainer')
                 or user.has_perm('gym.manage_gyms')):
             return HttpResponseForbidden()
     else:
