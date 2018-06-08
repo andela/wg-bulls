@@ -45,9 +45,11 @@ patterns_gym = [
     url(r'^new-user-data/export$',
         gym.gym_new_user_info_export,
         name='new-user-data-export'),
-    url(r'^(?P<pk>\d+)/members$',
-        gym.GymUserListView.as_view(),
-        name='user-list'),
+
+    url(r'^(?P<pk>\d+)/members/(?P<status>active|deactivated)?$',
+    gym.GymUserListView.as_view(),
+    name='user-list'),
+
     url(r'^(?P<gym_pk>\d+)/add-member$',
         gym.GymAddUserView.as_view(),
         name='add-user'),
