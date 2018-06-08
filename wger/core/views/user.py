@@ -614,7 +614,7 @@ def add_fitbit_support(request, code=None):
             'code': code,
             'client_id': client_id,
             'grant_type': 'authorization_code',
-            'redirect_uri': 'https://wg-bulls.herokuapp.com/en/user/add_fitbit'
+            'redirect_uri': 'https://wg-bulls.herokuapp.com/en/dashboard'
         }
         headers = {
             'Content-Type': 'application/x-www-form-urlencoded',
@@ -637,9 +637,9 @@ def add_fitbit_support(request, code=None):
                 if "errors" in find_error:
                     messages.info(request, _('Make sure the profile is checked.'))
                     template_data['fitbit_auth_link'] = fitbit_client.authorize_token_url(
-                        redirect_uri='https://wg-bulls.herokuapp.com/en/user/add_fitbit',
+                        redirect_uri='https://wg-bulls.herokuapp.com/en/dashboard',
                         prompt='consent')[0]
-                    return render(request, 'user/fitbit_support.html', template_data)
+                    # return render(request, 'user/fitbit_support.html', template_data)
 
             else:
                 today = date.today()
@@ -682,7 +682,7 @@ def add_fitbit_support(request, code=None):
                 except IntegrityError as error:
                     if error:
                         messages.info(request, _('Already synced up for today.'))
-                return render(request, 'user/fitbit_support.html', template_data)
+                # return render(request, 'user/fitbit_support.html', template_data)
 
                 try:
                     for food in response_nutrition.json()['foods']:
@@ -715,11 +715,10 @@ def add_fitbit_support(request, code=None):
                 return HttpResponseRedirect(reverse(
                     'weight:overview', kwargs={'username': request.user.username}))
         else:
-            messages.warning(request, _('Something went wrong.'))
-            return render(request, 'user/fitbit_support.html', template_data)
+            messages.warning(request, _('Something went wrong. Try again'))
+            # return render(request, 'user/fitbit_support.html', template_data)
 
     # link to page that makes user authorize wger to access their fitbit
     template_data['fitbit_auth_link'] = fitbit_client.authorize_token_url(
-        redirect_uri='https://wg-bulls.herokuapp.com/en/user/add_fitbit', prompt='consent')[0]
-    
-    return render(request, 'user/fitbit_support.html', template_data)
+        redirect_uri='https://wg-bulls.herokuapp.com/en/dashboard', prompt='consent')[0]
+    # return render(request, 'user/fitbit_support.html', template_data)
