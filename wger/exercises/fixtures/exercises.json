@@ -1824,7 +1824,7 @@
             "category": 8,
             "uuid": "6dcc9adb-939c-4581-9e44-d0d73753997b",
             "muscles": [
-                1
+                1, 20
             ],
             "license": 1,
             "name": "Hammercurls"
@@ -2880,7 +2880,7 @@
             "category": 8,
             "uuid": "5baf40e5-ea3c-4f8d-b60a-d294ee2de55b",
             "muscles": [
-                1
+                1, 20
             ],
             "license": 1,
             "name": "Hammercurls on cable"
@@ -3119,7 +3119,7 @@
             "category": 13,
             "uuid": "79a3a34c-262f-4cae-b827-b5a85b11b860",
             "muscles": [
-                2
+                2, 17
             ],
             "license": 1,
             "name": "Lateral raises on cable, one armed"
@@ -3887,7 +3887,7 @@
             "category": 8,
             "uuid": "84b4e711-8b29-4541-ad58-dad967f82390",
             "muscles": [
-                13
+                13, 20
             ],
             "license": 1,
             "name": "Preacher Curls"
@@ -4199,7 +4199,7 @@
             "category": 8,
             "uuid": "438678dc-5a62-4496-9458-341af0616626",
             "muscles": [
-                1
+                1, 20
             ],
             "license": 1,
             "name": "Reverse bar curl"
@@ -4590,7 +4590,7 @@
             "creation_date": "2014-03-09",
             "category": 13,
             "uuid": "53ca25b3-61d9-4f72-bfdb-492b83484ff5",
-            "muscles": [],
+            "muscles": [17],
             "license": 1,
             "name": "Arnold Shoulder Press"
         },
@@ -4630,7 +4630,7 @@
             "language": 2,
             "muscles_secondary": [
                 4,
-                5
+                5, 17
             ],
             "description": "<p>The military press is a variation of the overhead press weight training exercise using very strict form and no pre-movement momentum.The military press targets the deltoid muscles in the shoulders as well as the triceps. Additionally, it works the core and legs, which the lifter uses to help stabilize the weight.The lift begins with the lifter standing and the barbell on the anterior deltoids. The lifter then raises the barbell overhead by pressing the palms of the hands against the underside of the barbell.</p>",
             "equipment": [
@@ -4725,7 +4725,7 @@
             "description": "<p>To execute the exercise, the lifter stands with their feet shoulder width apart and weights or resistance handles held by their side with a pronated (overhand) grip.</p>\n<p>The movement is to bring the arms up in front of the body to eye level and with only a slight bend in the elbow. This isolates the anterior deltoid muscle (front of the shoulder) and uses the anterior deltoid to lift the weight.</p>\n<p>When lifting it is important to keep the body still so the anterior deltoid is fully utilised; if the weight cannot be lifted by standing still then it is too heavy and a lower weight is needed. It is important to keep a slight bend in the elbow when lifting as keeping the elbow locked will add stress to the elbow joint and could cause injury.</p>\n<p>A neutral grip, similar to that used in the hammer curl, can also be used. With this variation the weight is again raised to eye level, but out to a 45 degree angle from the front of the body. This may be beneficial for those with shoulder injuries, particularly those related to the rotator cuff.</p>",
             "equipment": [
                 1,
-                3
+                3, 17
             ],
             "creation_date": "2014-03-24",
             "category": 13,
@@ -6112,7 +6112,7 @@
             "uuid": "aba7ba7a-6ff0-47d4-ab66-8952e21e38c5",
             "muscles": [
                 2,
-                9
+                9, 17
             ],
             "license": 2,
             "name": "Lateral-to-Front Raises"
@@ -7581,6 +7581,253 @@
         },
         "model": "exercises.exercise"
     },
+   
+    {
+        "pk": 387,
+        "fields": {
+            "license_author": "wger.de",
+            "status": "2",
+            "language": 2,
+            "muscles_secondary": [],
+            "description": "<p>Sit on a bench with knees bent and the forearm(s) resting on the thigh, or with forearms on a bench and hands hanging off the edge. The palm should be facing up and the hand should be free to move completely up and down. At the starting point, the wrist should be bent back so that the fingers are almost pointing down at the floor. In a steady motion, the lifter should raise the weight by using the forearm muscles to bring the hand up as far as possible. The forearm itself should remain resting on the thigh. Then the weight should be slowly lowered back down to the starting point.</p>\n<p>\u00a0</p>",
+            "equipment": [
+                8,
+                3
+            ],
+            "creation_date": "2018-03-07",
+            "category": 8,
+            "uuid": "76964898-192c-4e93-b24c-914ea542002b",
+            "muscles": [
+                13
+            ],
+            "license": 2,
+            "name": "Wrist Curl"
+        },
+        "model": "exercises.exercise"
+    },
+    {
+        "pk": 388,
+        "fields": {
+            "license_author": "wger.de",
+            "status": "2",
+            "language": 2,
+            "muscles_secondary": [],
+            "description": "<p>Squat down and lift a weight off the floor with the hand until standing up straight again. Grips can be face down or opposing with one hand down and one hand up, to prevent dropping. Face up should not be used because this puts excess stress on the inner arms.</p>\n<p>\u00a0</p>",
+            "equipment": [
+                1,
+                3
+            ],
+            "creation_date": "2018-03-07",
+            "category": 8,
+            "uuid": "76964898-192c-4e93-b24c-914ea542002b",
+            "muscles": [
+                13
+            ],
+            "license": 2,
+            "name": "Deadlift"
+        },
+        "model": "exercises.exercise"
+    },
+    {
+        "pk": 389,
+        "fields": {
+            "license_author": "wger.de",
+            "status": "2",
+            "language": 2,
+            "muscles_secondary": [],
+            "description": "<p>To begin, stand straight up grabbing a wrist roller using a pronated grip (palms facing down). Your feet should be shoulder width apart.Repeat for the prescribed amount of repetitions in your program.</p>\n<p>\u00a0</p>",
+            "equipment": [
+                7
+            ],
+            "creation_date": "2018-03-07",
+            "category": 8,
+            "uuid": "76964898-192c-4e93-b24c-914ea542002b",
+            "muscles": [
+                4
+            ],
+            "license": 2,
+            "name": "Wrist Roller"
+        },
+        "model": "exercises.exercise"
+    },
+    {
+        "pk": 390,
+        "fields": {
+            "license_author": "wger.de",
+            "status": "2",
+            "language": 2,
+            "muscles_secondary": [],
+            "description": "<p>Sit or stand being sure to keep the back straight and grasp the dumbbells. If the weight is heavy, you may have to knee the weights into position.With the palms facing inward move the weights to the chest. When in the start position, the elbows will be pointing forward.</p>\n<p>\u00a0</p>",
+            "equipment": [
+                3
+            ],
+            "creation_date": "2018-03-07",
+            "category": 13,
+            "uuid": "76964898-192c-4e93-b24c-914ea542002b",
+            "muscles": [
+                17
+            ],
+            "license": 2,
+            "name": "Arnold Presses"
+        },
+        "model": "exercises.exercise"
+    },
+    {
+        "pk": 391,
+        "fields": {
+            "license_author": "wger.de",
+            "status": "2",
+            "language": 2,
+            "muscles_secondary": [],
+            "description": "<p>Set the pin of the pulley to the lowest setting. Secure a single-hand or straight-bar attachment to the cable machine. Position the body to face directly at the weight stack.</p>\n<p>\u00a0</p>",
+            "equipment": [
+                10
+            ],
+            "creation_date": "2018-03-07",
+            "category": 13,
+            "uuid": "76964898-192c-4e93-b24c-914ea542002b",
+            "muscles": [
+                17
+            ],
+            "license": 2,
+            "name": "Front Arm Raises"
+        },
+        "model": "exercises.exercise"
+    },
+    {
+        "pk": 392,
+        "fields": {
+            "license_author": "wger.de",
+            "status": "2",
+            "language": 2,
+            "muscles_secondary": [],
+            "description": "<p>Locate a flat bench and place a dumbbell to the long side of it (a little closer than midway to where the upper body will be). Lie on the bench with one side of the body down (if you're working the right shoulder, your left side will be on the bench; reverse for working the right side).</p>\n<p>\u00a0</p>",
+            "equipment": [
+                8
+            ],
+            "creation_date": "2018-03-07",
+            "category": 13,
+            "uuid": "76964898-192c-4e93-b24c-914ea542002b",
+            "muscles": [
+                17
+            ],
+            "license": 2,
+            "name": "Lying Side Laterals"
+        },
+        "model": "exercises.exercise"
+    },
+    {
+        "pk": 393,
+        "fields": {
+            "license_author": "wger.de",
+            "status": "2",
+            "language": 2,
+            "muscles_secondary": [],
+            "description": "<p>Now bend over; this motion isn't dissimilar to how you do bent-over rows or T-bar rows supported against a bench. They hit the middle traps, rhomboids and rear delts quite well. </p>\n<p>\u00a0</p>",
+            "equipment": [
+                3
+            ],
+            "creation_date": "2018-03-07",
+            "category": 13,
+            "uuid": "76964898-192c-4e93-b24c-914ea542002b",
+            "muscles": [
+                20
+            ],
+            "license": 2,
+            "name": "Rear Delts"
+        },
+        "model": "exercises.exercise"
+    },
+    {
+        "pk": 394,
+        "fields": {
+            "license_author": "wger.de",
+            "status": "2",
+            "language": 2,
+            "muscles_secondary": [],
+            "description": "<p>Setup a flat bench and place one knee up on the bench with the other foot planted firmly on the ground. Using the opposite arm for support, grab a dumbbell using an overhand grip and, instead of tucking your arm in toward your side as you would for a traditional dumbbell row, flare it outward so that your upper arm is perpendicular to your body. </p>\n<p>\u00a0</p>",
+            "equipment": [
+                8,
+                3
+            ],
+            "creation_date": "2018-03-07",
+            "category": 13,
+            "uuid": "76964898-192c-4e93-b24c-914ea542002b",
+            "muscles": [
+                20
+            ],
+            "license": 2,
+            "name": "Rear Delt Dumbbell Rows"
+        },
+        "model": "exercises.exercise"
+    },
+    {
+        "pk": 395,
+        "fields": {
+            "license_author": "wger.de",
+            "status": "2",
+            "language": 2,
+            "muscles_secondary": [],
+            "description": "<p>Tie a band of moderate resistance to a squat rack pole or other fixed pillar. Grab the band with both hands, palms facing each other. Use a square or split stance, whichever is more comfortable. </p>\n<p>\u00a0</p>",
+            "equipment": [
+                10
+            ],
+            "creation_date": "2018-03-07",
+            "category": 13,
+            "uuid": "76964898-192c-4e93-b24c-914ea542002b",
+            "muscles": [
+                20
+            ],
+            "license": 2,
+            "name": "Band Face Pull"
+        },
+        "model": "exercises.exercise"
+    },
+    {
+        "pk": 396,
+        "fields": {
+            "license_author": "wger.de",
+            "status": "2",
+            "language": 2,
+            "muscles_secondary": [],
+            "description": "<p>Set the cable at upper chest height using a rope attachment.Grab onto the ends of the rope from underneath using a neutral hammer grip. Most people perform this exercise by gripping the rope from the top with the palms facing down, but the variation I outline here allows for a larger range of motion and greater external rotation of the shoulders as you pull the rope backward.With your chest up, shoulders down and back, scapula retracted and head stationary, pull the rope towards your face while at the same time imagining that you’re trying to pull the rope apart. A good cue is to imagine that you were hitting a back double bicep pose on each rep.Squeeze your rear delts and upper back, and then return back to the starting position.If you train from home and/or don’t have access to a cable machine with a rope, you can also perform your face pulls using resistance bands or with dumbbells on an incline bench. </p>\n<p>\u00a0</p>",
+            "equipment": [
+                10
+            ],
+            "creation_date": "2018-03-07",
+            "category": 13,
+            "uuid": "76964898-192c-4e93-b24c-914ea542002b",
+            "muscles": [
+                18
+            ],
+            "license": 2,
+            "name": "Face Pulls"
+        },
+        "model": "exercises.exercise"
+    },
+    {
+        "pk": 397,
+        "fields": {
+            "license_author": "wger.de",
+            "status": "2",
+            "language": 2,
+            "muscles_secondary": [],
+            "description": "<p>Start off in a bent over position with your upper body just above parallel to the ground. Grab onto the cable using a single-hand attachment with a neutral grip.Next, allow your shoulder to hang forward slightly and keep your scapula flat rather than retracted. This directs more of the tension off of the upper back and straight onto the rear delt. There’s nothing wrong with involving the muscles of the upper back, but with this particular exercise we want to focus on pure rear deltoid isolation.From there, while focusing on pulling through your elbow rather than your hand, and while emphasizing control rather than just heaving up the weight, raise the cable out to your side until you feel a strong contraction in the rear delt. Lower the weight under control and repeat. </p>\n<p>\u00a0</p>",
+            "equipment": [
+                10
+            ],
+            "creation_date": "2018-03-07",
+            "category": 13,
+            "uuid": "76964898-192c-4e93-b24c-914ea542002b",
+            "muscles": [
+                18
+            ],
+            "license": 2,
+            "name": "Bent Over Rear Lateral Cable Raise"
+        },
+        "model": "exercises.exercise"
+    },
+    
     {
         "pk": 6,
         "fields": {
