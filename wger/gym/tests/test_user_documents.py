@@ -14,7 +14,8 @@
 
 from django.core.urlresolvers import reverse
 
-from wger.core.tests.base_testcase import WorkoutManagerAccessTestCase, delete_testcase_add_methods
+from wger.core.tests.base_testcase import WorkoutManagerAccessTestCase
+from wger.core.tests.base_testcase import delete_testcase_add_methods
 from wger.core.tests.base_testcase import WorkoutManagerAddTestCase
 from wger.core.tests.base_testcase import WorkoutManagerDeleteTestCase
 from wger.core.tests.base_testcase import WorkoutManagerEditTestCase
@@ -94,5 +95,6 @@ class DeleteDocumentTestCase(WorkoutManagerDeleteTestCase):
                  'trainer4',
                  'manager3',
                  'general_manager1')
+
 
 delete_testcase_add_methods(DeleteDocumentTestCase)

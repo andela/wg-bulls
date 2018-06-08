@@ -22,4 +22,5 @@ class Config(AppConfig):
     verbose_name = "Email"
 
     def ready(self):
+        import wger.core.signals
         pass

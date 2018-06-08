@@ -13,7 +13,7 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU Affero General Public License
-
+import os
 import logging
 
 from django.shortcuts import render, get_object_or_404
@@ -21,8 +21,10 @@ from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.template.context_processors import csrf
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _, ugettext_lazy
+from django.db.utils import IntegrityError
 from django.utils import translation
-from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
+from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import authenticate
 from django.contrib.auth import login as django_login
 from django.contrib.auth import logout as django_logout
@@ -40,8 +42,10 @@ from django.conf import settings
 from rest_framework.authtoken.models import Token
 
 from wger.utils.constants import USER_TAB
-from wger.utils.generic_views import WgerFormMixin, WgerMultiplePermissionRequiredMixin
-from wger.utils.user_agents import check_request_amazon, check_request_android
+from wger.utils.generic_views import WgerFormMixin
+from wger.utils.generic_views import WgerMultiplePermissionRequiredMixin
+from wger.utils.user_agents import check_request_amazon
+from wger.utils.user_agents import check_request_android
 from wger.core.forms import (
     UserPreferencesForm,
     UserPersonalInformationForm,
@@ -58,11 +62,19 @@ from wger.manager.models import (
 from wger.nutrition.models import NutritionPlan
 from wger.config.models import GymConfig
 from wger.weight.models import WeightEntry
+from wger.exercises.models import ExerciseCategory, Exercise
 from wger.gym.models import (
     AdminUserNote,
     GymUserConfig,
     Contract
 )
+from datetime import date
+from fitbit import FitbitOauth2Client, Fitbit
+import base64
+import requests
+import datetime
+import decimal
+
 
 logger = logging.getLogger(__name__)
 
@@ -85,24 +97,29 @@ def login(request):
 @login_required()
 def delete(request, user_pk=None):
     '''
-    Delete a user account and all his data, requires password confirmation first
+    Delete a user account and all
+    his data, requires password confirmation first
 
-    If no user_pk is present, the user visiting the URL will be deleted, otherwise
+    If no user_pk is present, the user
+    visiting the URL will be deleted, otherwise
     a gym administrator is deleting a different user
     '''
 
     if user_pk:
         user = get_object_or_404(User, pk=user_pk)
-        form_action = reverse('core:user:delete', kwargs={'user_pk': user_pk})
+        form_action = reverse(
+            'core:user:delete', kwargs={'user_pk': user_pk})
 
         # Forbidden if the user has not enough rights, doesn't belong to the
         # gym or is an admin as well. General admins can delete all users.
-        if not request.user.has_perm('gym.manage_gyms') \
-                and (not request.user.has_perm('gym.manage_gym')
-                     or request.user.userprofile.gym_id != user.userprofile.gym_id
-                     or user.has_perm('gym.manage_gym')
-                     or user.has_perm('gym.gym_trainer')
-                     or user.has_perm('gym.manage_gyms')):
+        if not request.user.has_perm(
+                'gym.manage_gyms') \
+            and (
+            not request.user.has_perm('gym.manage_gym')
+                or request.user.userprofile.gym_id != user.userprofile.gym_id
+                or user.has_perm('gym.manage_gym')
+                or user.has_perm('gym.gym_trainer')
+                or user.has_perm('gym.manage_gyms')):
             return HttpResponseForbidden()
     else:
         user = request.user
@@ -111,19 +128,23 @@ def delete(request, user_pk=None):
     form = PasswordConfirmationForm(user=request.user)
 
     if request.method == 'POST':
-        form = PasswordConfirmationForm(data=request.POST, user=request.user)
+        form = PasswordConfirmationForm(
+            data=request.POST, user=request.user)
         if form.is_valid():
 
             user.delete()
-            messages.success(request,
-                             _('Account "{0}" was successfully deleted').format(user.username))
+            messages.success(
+                request,
+                _('Account "{0}" was successfully deleted').format(
+                    user.username))
 
             if not user_pk:
                 django_logout(request)
                 return HttpResponseRedirect(reverse('software:features'))
             else:
                 gym_pk = request.user.userprofile.gym_id
-                return HttpResponseRedirect(reverse('gym:gym:user-list', kwargs={'pk': gym_pk}))
+                return HttpResponseRedirect(
+                    reverse('gym:gym:user-list', kwargs={'pk': gym_pk}))
     context = {'form': form,
                'user_delete': user,
                'form_action': form_action}
@@ -162,7 +183,8 @@ def trainer_login(request, user_pk):
             or user.has_perm('gym.manage_gyms')):
         own = True
 
-    # Note: it seems we have to manually set the authentication backend here
+    # Note: it seems we have to manually set
+    # the authentication backend here
     # - https://docs.djangoproject.com/en/1.6/topics/auth/default/#auth-web-requests
     # - http://stackoverflow.com/questions/3807777/django-login-without-authenticating
     if own:
@@ -175,10 +197,12 @@ def trainer_login(request, user_pk):
         if request.GET.get('next'):
             return HttpResponseRedirect(request.GET['next'])
         else:
-            return HttpResponseRedirect(reverse('core:index'))
+            return HttpResponseRedirect(
+                reverse('core:index'))
     else:
-        return HttpResponseRedirect(reverse('gym:gym:user-list',
-                                            kwargs={'pk': user.userprofile.gym_id}))
+        return HttpResponseRedirect(
+            reverse('gym:gym:user-list',
+                    kwargs={'pk': user.userprofile.gym_id}))
 
 
 def logout(request):
@@ -205,15 +229,19 @@ def registration(request):
     template_data.update(csrf(request))
 
     # Don't use captcha when registering through an app
-    is_app = check_request_amazon(request) or check_request_android(request)
-    FormClass = RegistrationFormNoCaptcha if is_app else RegistrationForm
+    is_app = check_request_amazon(
+        request) or check_request_android(request)
+    FormClass = RegistrationFormNoCaptcha if \
+        is_app else RegistrationForm
 
     # Don't show captcha if the global parameter is false
     if not settings.WGER_SETTINGS['USE_RECAPTCHA']:
         FormClass = RegistrationFormNoCaptcha
 
-    # Redirect regular users, in case they reached the registration page
-    if request.user.is_authenticated() and not request.user.userprofile.is_temporary:
+    # Redirect regular users, in case they
+    # reached the registration page
+    if request.user.is_authenticated() and\
+            not request.user.userprofile.is_temporary:
         return HttpResponseRedirect(reverse('core:dashboard'))
 
     if request.method == 'POST':
@@ -230,7 +258,8 @@ def registration(request):
             user.save()
 
             # Pre-set some values of the user's profile
-            language = Language.objects.get(short_name=translation.get_language())
+            language = Language.objects.get(
+                short_name=translation.get_language())
             user.userprofile.notification_language = language
 
             # Set default gym, if needed
@@ -248,7 +277,8 @@ def registration(request):
 
             user = authenticate(username=username, password=password)
             django_login(request, user)
-            messages.success(request, _('You were successfully registered'))
+            messages.success(
+                request, _('You were successfully registered'))
             return HttpResponseRedirect(reverse('core:dashboard'))
     else:
         form = FormClass()
@@ -275,7 +305,8 @@ def preferences(request):
     # Process the preferences form
     if request.method == 'POST':
 
-        form = UserPreferencesForm(data=request.POST, instance=request.user.userprofile)
+        form = UserPreferencesForm(
+            data=request.POST, instance=request.user.userprofile)
         form.user = request.user
 
         # Save the data if it validates
@@ -283,11 +314,13 @@ def preferences(request):
             form.save()
             redirect = True
     else:
-        form = UserPreferencesForm(instance=request.user.userprofile)
+        form = UserPreferencesForm(
+            instance=request.user.userprofile)
 
     # Process the email form
     if request.method == 'POST':
-        email_form = UserPersonalInformationForm(data=request.POST, instance=request.user)
+        email_form = UserPersonalInformationForm(
+            data=request.POST, instance=request.user)
 
         if email_form.is_valid() and redirect:
             email_form.save()
@@ -295,16 +328,19 @@ def preferences(request):
         else:
             redirect = False
     else:
-        email_form = UserPersonalInformationForm(instance=request.user)
+        email_form = UserPersonalInformationForm(
+            instance=request.user)
 
     template_data['form'] = form
     template_data['email_form'] = email_form
 
     if redirect:
-        messages.success(request, _('Settings successfully updated'))
+        messages.success(
+            request, _('Settings successfully updated'))
         return HttpResponseRedirect(reverse('core:user:preferences'))
     else:
-        return render(request, 'user/preferences.html', template_data)
+        return render(
+            request, 'user/preferences.html', template_data)
 
 
 class UserDeactivateView(LoginRequiredMixin,
@@ -315,7 +351,8 @@ class UserDeactivateView(LoginRequiredMixin,
     '''
     permanent = False
     model = User
-    permission_required = ('gym.manage_gym', 'gym.manage_gyms', 'gym.gym_trainer')
+    permission_required = (
+        'gym.manage_gym', 'gym.manage_gyms', 'gym.gym_trainer')
 
     def dispatch(self, request, *args, **kwargs):
         '''
@@ -326,17 +363,22 @@ class UserDeactivateView(LoginRequiredMixin,
         if not request.user.is_authenticated():
             return HttpResponseForbidden()
 
-        if (request.user.has_perm('gym.manage_gym') or request.user.has_perm('gym.gym_trainer')) \
-                and edit_user.userprofile.gym_id != request.user.userprofile.gym_id:
+        if (
+            request.user.has_perm('gym.manage_gym') or
+            request.user.has_perm('gym.gym_trainer')) \
+                and edit_user.userprofile.gym_id != request.\
+                user.userprofile.gym_id:
             return HttpResponseForbidden()
 
-        return super(UserDeactivateView, self).dispatch(request, *args, **kwargs)
+        return super(UserDeactivateView, self).\
+            dispatch(request, *args, **kwargs)
 
     def get_redirect_url(self, pk):
         edit_user = get_object_or_404(User, pk=pk)
         edit_user.is_active = False
         edit_user.save()
-        messages.success(self.request, _('The user was successfully deactivated'))
+        messages.success(self.request, _(
+            'The user was successfully deactivated'))
         return reverse('core:user:overview', kwargs=({'pk': pk}))
 
 
@@ -348,7 +390,8 @@ class UserActivateView(LoginRequiredMixin,
     '''
     permanent = False
     model = User
-    permission_required = ('gym.manage_gym', 'gym.manage_gyms', 'gym.gym_trainer')
+    permission_required = (
+        'gym.manage_gym', 'gym.manage_gyms', 'gym.gym_trainer')
 
     def dispatch(self, request, *args, **kwargs):
         '''
@@ -359,17 +402,21 @@ class UserActivateView(LoginRequiredMixin,
         if not request.user.is_authenticated():
             return HttpResponseForbidden()
 
-        if (request.user.has_perm('gym.manage_gym') or request.user.has_perm('gym.gym_trainer')) \
-                and edit_user.userprofile.gym_id != request.user.userprofile.gym_id:
+        if (request.user.has_perm('gym.manage_gym') or
+            request.user.has_perm('gym.gym_trainer')) \
+                and edit_user.userprofile.gym_id != \
+                request.user.userprofile.gym_id:
             return HttpResponseForbidden()
 
-        return super(UserActivateView, self).dispatch(request, *args, **kwargs)
+        return super(UserActivateView, self).\
+            dispatch(request, *args, **kwargs)
 
     def get_redirect_url(self, pk):
         edit_user = get_object_or_404(User, pk=pk)
         edit_user.is_active = True
         edit_user.save()
-        messages.success(self.request, _('The user was successfully activated'))
+        messages.success(self.request, _(
+            'The user was successfully activated'))
         return reverse('core:user:overview', kwargs=({'pk': pk}))
 
 
@@ -399,20 +446,25 @@ class UserEditView(WgerFormMixin,
 
         if user.has_perm('gym.manage_gym') \
                 and not user.has_perm('gym.manage_gyms') \
-                and user.userprofile.gym != self.get_object().userprofile.gym:
+                and user.userprofile.gym != \
+                self.get_object().userprofile.gym:
             return HttpResponseForbidden()
 
-        return super(UserEditView, self).dispatch(request, *args, **kwargs)
+        return super(UserEditView, self).\
+            dispatch(request, *args, **kwargs)
 
     def get_success_url(self):
-        return reverse('core:user:overview', kwargs={'pk': self.kwargs['pk']})
+        return reverse('core:user:overview',
+                       kwargs={'pk': self.kwargs['pk']})
 
     def get_context_data(self, **kwargs):
         '''
         Send some additional data to the template
         '''
-        context = super(UserEditView, self).get_context_data(**kwargs)
-        context['form_action'] = reverse('core:user:edit', kwargs={'pk': self.object.id})
+        context = super(UserEditView, self)\
+            .get_context_data(**kwargs)
+        context['form_action'] = reverse(
+            'core:user:edit', kwargs={'pk': self.object.id})
         context['title'] = _('Edit {0}'.format(self.object))
         return context
 
@@ -444,12 +496,15 @@ def api_key(request):
     return render(request, 'user/api_key.html', context)
 
 
-class UserDetailView(LoginRequiredMixin, WgerMultiplePermissionRequiredMixin, DetailView):
+class UserDetailView(LoginRequiredMixin,
+                     WgerMultiplePermissionRequiredMixin, DetailView):
     '''
     User overview for gyms
     '''
     model = User
-    permission_required = ('gym.manage_gym', 'gym.manage_gyms', 'gym.gym_trainer')
+    permission_required = (
+        'gym.manage_gym', 'gym.manage_gyms',
+        'gym.gym_trainer')
     template_name = 'user/overview.html'
     context_object_name = 'current_user'
 
@@ -465,9 +520,11 @@ class UserDetailView(LoginRequiredMixin, WgerMultiplePermissionRequiredMixin, De
         if not user.is_authenticated():
             return HttpResponseForbidden()
 
-        if (user.has_perm('gym.manage_gym') or user.has_perm('gym.gym_trainer')) \
+        if (user.has_perm('gym.manage_gym') or
+            user.has_perm('gym.gym_trainer')) \
                 and not user.has_perm('gym.manage_gyms') \
-                and user.userprofile.gym != self.get_object().userprofile.gym:
+                and user.userprofile.gym != self.\
+                get_object().userprofile.gym:
             return HttpResponseForbidden()
 
         return super(UserDetailView, self).dispatch(request, *args, **kwargs)
@@ -485,13 +542,18 @@ class UserDetailView(LoginRequiredMixin, WgerMultiplePermissionRequiredMixin, De
                         'logs': logs.dates('date', 'day').count(),
                         'last_log': logs.last()})
         context['workouts'] = out
-        context['weight_entries'] = WeightEntry.objects.filter(user=self.object)\
+        context['weight_entries'] = WeightEntry.objects.filter(
+            user=self.object)\
             .order_by('-date')[:5]
-        context['nutrition_plans'] = NutritionPlan.objects.filter(user=self.object)\
+        context['nutrition_plans'] = NutritionPlan.objects.filter(
+            user=self.object)\
             .order_by('-creation_date')[:5]
-        context['session'] = WorkoutSession.objects.filter(user=self.object).order_by('-date')[:10]
-        context['admin_notes'] = AdminUserNote.objects.filter(member=self.object)[:5]
-        context['contracts'] = Contract.objects.filter(member=self.object)[:5]
+        context['session'] = WorkoutSession.objects.filter(
+            user=self.object).order_by('-date')[:10]
+        context['admin_notes'] = AdminUserNote.objects.filter(
+            member=self.object)[:5]
+        context['contracts'] = Contract.objects.filter(
+            member=self.object)[:5]
         return context
 
 
@@ -510,7 +572,8 @@ class UserListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
         out = {'admins': [],
                'members': []}
 
-        for u in User.objects.select_related('usercache', 'userprofile__gym').all():
+        for u in User.objects.select_related(
+                'usercache', 'userprofile__gym').all():
             out['members'].append({'obj': u,
                                    'last_log': u.usercache.last_activity})
 
@@ -529,3 +592,133 @@ class UserListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
                                           _('Gym')],
                                  'users': context['object_list']['members']}
         return context
+
+
+@login_required
+def add_fitbit_support(request, code=None):
+    '''
+    Gets data from fitbit upon the user authorizing Wger to access their data
+    '''
+    template_data = {}
+    client_id = "22CTVC"
+    client_secret = "a464510ddfbdb6f693948702ea27e6ce"
+    # Get fitbit token from enviromnent variables
+    fitbit_token = os.environ.get('FITBIT_TOKEN')
+
+    fitbit_client = FitbitOauth2Client(client_id, client_secret)
+
+    if 'code' in request.GET:  # get token
+        code = request.GET.get("code", "")
+        form = {
+            'client_secret': client_secret,
+            'code': code,
+            'client_id': client_id,
+            'grant_type': 'authorization_code',
+            'redirect_uri': 'https://wg-bulls.herokuapp.com/en/user/add_fitbit'
+        }
+        headers = {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            "Authorization": 'Basic {}'.format(fitbit_token),
+        }
+
+        # Get user weight data from fitbit
+        response = requests.post(fitbit_client.request_token_url, form, headers=headers).json()
+        
+        if "access_token" in response:
+            token = response['access_token']
+            user_id = response['user_id']
+            headers['Authorization'] = 'Bearer ' + token
+
+            response_weight = requests.get(
+                'https://api.fitbit.com/1/user/' + user_id + '/profile.json', headers=headers)
+
+            find_error = response_weight.json()
+            for key in find_error.keys():
+                if "errors" in find_error:
+                    messages.info(request, _('Make sure the profile is checked.'))
+                    template_data['fitbit_auth_link'] = fitbit_client.authorize_token_url(
+                        redirect_uri='https://wg-bulls.herokuapp.com/en/user/add_fitbit',
+                        prompt='consent')[0]
+                    return render(request, 'user/fitbit_support.html', template_data)
+
+            else:
+                today = date.today()
+                weight = response_weight.json()['user']['weight']
+                response_nutrition = requests.get(
+                    'https://api.fitbit.com/1/user/' + user_id + '/foods/log/date/{date}.json'.format(
+                        date=today),
+                    headers=headers)
+
+                response_activity = requests.get(
+                    'https://api.fitbit.com/1/user/' + user_id + '/activities/date/{date}.json'.format(
+                        date=today),
+                    headers=headers)
+
+                # add weight and activity to db
+                try:
+                    entry = WeightEntry()
+                    entry.weight = weight
+                    entry.user = request.user
+                    entry.date = datetime.date.today()
+                    entry.save()
+                    messages.success(request, _('Successfully synced weight data.'))
+
+                    if not ExerciseCategory.objects.filter(name='Fitbit'):
+                        fitbit_category = ExerciseCategory()
+                        fitbit_category.name = 'Fitbit'
+                        fitbit_category.save()
+
+                    for detail in response_activity.json()['activities']:
+                        name = detail['name']
+                        description = detail['description']
+
+                        exercise = Exercise()
+                        exercise.name_original = name
+                        exercise.name = name
+                        exercise.category = ExerciseCategory.objects.get(name='Fitbit')
+                        exercise.description = description
+                        exercise.language = Language.objects.get(short_name='en')
+                        exercise.save()
+                except IntegrityError as error:
+                    if error:
+                        messages.info(request, _('Already synced up for today.'))
+                    return render(request, 'user/fitbit_support.html', template_data)
+
+                try:
+                    for food in response_nutrition.json()['foods']:
+                        name = food.get('loggedFood').get('name')
+                        nutritionalValues = food.get('nutritionalValues')
+
+                        if nutritionalValues:
+                            energy = nutritionalValues.get('calories', 0)
+                            protein = nutritionalValues.get('protein', 0)
+                            carbohydrates = nutritionalValues.get('carbs', 0)
+                            fat = nutritionalValues.get('fat', 0)
+                            fibres = nutritionalValues.get('fiber', 0)
+                            sodium = nutritionalValues.get('sodium', 0)
+
+                        ingredient = Ingredient()
+                        if not Ingredient.objects.filter(name=name).exists():
+                            ingredient.user = request.user
+                            ingredient.language = Language.objects.get(short_name='en')
+                            ingredient.name = name
+                            ingredient.energy = energy
+                            ingredient.protein = protein
+                            ingredient.carbohydrates = carbohydrates
+                            ingredient.fat = fat
+                            ingredient.fibres = fibres
+                            ingredient.sodium = sodium
+                            ingredient.save()
+                except IntegrityError as error:
+                    messages.info(request, _('Already synced up for today.'))
+
+                return HttpResponseRedirect(reverse(
+                    'weight:overview', kwargs={'username': request.user.username}))
+        else:
+            messages.warning(request, _('Something went wrong. Try again'))
+            return render(request, 'user/fitbit_support.html', template_data)
+
+    # link to page that makes user authorize wger to access their fitbit
+    template_data['fitbit_auth_link'] = fitbit_client.authorize_token_url(
+        redirect_uri='https://wg-bulls.herokuapp.com/en/user/add_fitbit', prompt='consent')[0]
+    return render(request, 'user/fitbit_support.html', template_data)

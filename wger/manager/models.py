@@ -61,11 +61,10 @@ class Workout(models.Model):
         ordering = ["-creation_date", ]
 
     creation_date = models.DateField(_('Creation date'), auto_now_add=True)
-    comment = models.CharField(verbose_name=_('Description'),
-                               max_length=100,
-                               blank=True,
-                               help_text=_("A short description or goal of the workout. For "
-                                           "example 'Focus on back' or 'Week 1 of program xy'."))
+    comment = models.CharField(
+        verbose_name=_('Description'), max_length=100, blank=True, help_text=_(
+            "A short description or goal of the workout. For "
+            "example 'Focus on back' or 'Week 1 of program xy'."))
     user = models.ForeignKey(User, verbose_name=_('User'))
 
     def get_absolute_url(self):
@@ -109,10 +108,11 @@ class Workout(models.Model):
         Returns a canonical representation of the workout
 
         This form makes it easier to cache and use everywhere where all or part
-        of a workout structure is needed. As an additional benefit, the template
-        caches are not needed anymore.
+        of a workout structure is needed. As an additional benefit,
+        the template caches are not needed anymore.
         '''
-        workout_canonical_form = cache.get(cache_mapper.get_workout_canonical(self.pk))
+        workout_canonical_form = cache.get(
+            cache_mapper.get_workout_canonical(self.pk))
         if not workout_canonical_form:
             day_canonical_repr = []
             muscles_front = []
@@ -143,14 +143,18 @@ class Workout(models.Model):
 
                 day_canonical_repr.append(canonical_repr_day)
 
-            workout_canonical_form = {'obj': self,
-                                      'muscles': {'front': muscles_front,
-                                                  'back': muscles_back,
-                                                  'frontsecondary': muscles_front_secondary,
-                                                  'backsecondary': muscles_back_secondary},
-                                      'day_list': day_canonical_repr}
+            workout_canonical_form = {
+                'obj': self,
+                'muscles': {
+                    'front': muscles_front,
+                    'back': muscles_back,
+                    'frontsecondary': muscles_front_secondary,
+                    'backsecondary': muscles_back_secondary},
+                'day_list': day_canonical_repr}
             # Save to cache
-            cache.set(cache_mapper.get_workout_canonical(self.pk), workout_canonical_form)
+            cache.set(
+                cache_mapper.get_workout_canonical(
+                    self.pk), workout_canonical_form)
 
         return workout_canonical_form
 
@@ -162,8 +166,8 @@ class ScheduleManager(models.Manager):
 
     def get_current_workout(self, user):
         '''
-        Finds the currently active workout for the user, by checking the schedules
-        and the workouts
+        Finds the currently active workout for the user,
+         by checking the schedules and the workouts
         :rtype : list
         '''
 
@@ -171,13 +175,15 @@ class ScheduleManager(models.Manager):
         try:
             schedule = Schedule.objects.filter(user=user).get(is_active=True)
             if schedule.schedulestep_set.count():
-                # The schedule might exist and have steps, but if it's too far in
-                # the past and is not a loop, we won't use it. Doing it like this
+                # The schedule might exist and have steps, but if it's too
+                # far in the past and is not a loop, we won't use it.
+                # Doing it like this
                 # is kind of wrong, but lets us continue to the correct place
                 if not schedule.get_current_scheduled_workout():
                     raise ObjectDoesNotExist
 
-                active_workout = schedule.get_current_scheduled_workout().workout
+                active_workout = schedule.get_current_scheduled_workout(
+                ).workout
             else:
                 # same as above
                 raise ObjectDoesNotExist
@@ -187,7 +193,8 @@ class ScheduleManager(models.Manager):
 
             schedule = False
             try:
-                active_workout = Workout.objects.filter(user=user).latest('creation_date')
+                active_workout = Workout.objects.filter(
+                    user=user).latest('creation_date')
 
             # no luck, there aren't even workouts for the user
             except ObjectDoesNotExist:
@@ -217,28 +224,29 @@ class Schedule(models.Model):
     forward and performant
     '''
 
-    name = models.CharField(verbose_name=_('Name'),
-                            max_length=100,
-                            help_text=_("Name or short description of the schedule. "
-                                        "For example 'Program XYZ'."))
+    name = models.CharField(verbose_name=_('Name'), max_length=100,
+                            help_text=_(
+        "Name or short description of the schedule. "
+        "For example 'Program XYZ'."))
     '''Name or short description of the schedule.'''
 
     start_date = Html5DateField(verbose_name=_('Start date'),
                                 default=datetime.date.today)
     '''The start date of this schedule'''
 
-    is_active = models.BooleanField(verbose_name=_('Schedule active'),
-                                    default=True,
-                                    help_text=_("Tick the box if you want to mark this schedule "
-                                                "as your active one (will be shown e.g. on your "
-                                                "dashboard). All other schedules will then be "
-                                                "marked as inactive"))
-    '''A flag indicating whether the schedule is active (needed for dashboard)'''
+    is_active = models.BooleanField(
+        verbose_name=_('Schedule active'), default=True, help_text=_(
+            "Tick the box if you want to mark this schedule "
+            "as your active one (will be shown e.g. on your "
+            "dashboard). All other schedules will then be "
+            "marked as inactive"))
+    '''A flag indicating whether the schedule
+    is active (needed for dashboard)'''
 
-    is_loop = models.BooleanField(verbose_name=_('Is a loop'),
-                                  default=False,
-                                  help_text=_("Tick the box if you want to repeat the schedules "
-                                              "in a loop (i.e. A, B, C, A, B, C, and so on)"))
+    is_loop = models.BooleanField(
+        verbose_name=_('Is a loop'), default=False, help_text=_(
+            "Tick the box if you want to repeat the schedules "
+            "in a loop (i.e. A, B, C, A, B, C, and so on)"))
     '''A flag indicating whether the schedule should act as a loop'''
 
     def __str__(self):
@@ -277,7 +285,8 @@ class Schedule(models.Model):
             return False
         while not found:
             for step in steps:
-                current_limit = start_date + datetime.timedelta(weeks=step.duration)
+                current_limit = start_date + \
+                    datetime.timedelta(weeks=step.duration)
                 if current_limit >= datetime.date.today():
                     found = True
                     return step
@@ -323,10 +332,13 @@ class ScheduleStep(models.Model):
     workout = models.ForeignKey(Workout)
     '''The workout this step manages'''
 
-    duration = models.IntegerField(verbose_name=_('Duration'),
-                                   help_text=_('The duration in weeks'),
-                                   default=4,
-                                   validators=[MinValueValidator(1), MaxValueValidator(25)])
+    duration = models.IntegerField(
+        verbose_name=_('Duration'),
+        help_text=_('The duration in weeks'),
+        default=4,
+        validators=[
+            MinValueValidator(1),
+            MaxValueValidator(25)])
     '''The duration in weeks'''
 
     order = models.IntegerField(verbose_name=_('Order'),
@@ -373,11 +385,11 @@ class Day(models.Model):
 
     training = models.ForeignKey(Workout,
                                  verbose_name=_('Workout'))
-    description = models.CharField(max_length=100,
-                                   verbose_name=_('Description'),
-                                   help_text=_('A description of what is done on this day (e.g. '
-                                               '"Pull day") or what body parts are trained (e.g. '
-                                               '"Arms and abs")'))
+    description = models.CharField(
+        max_length=100, verbose_name=_('Description'), help_text=_(
+            'A description of what is done on this day (e.g. '
+            '"Pull day") or what body parts are trained (e.g. '
+            '"Arms and abs")'))
     day = models.ManyToManyField(DaysOfWeek,
                                  verbose_name=_('Day'))
 
@@ -396,7 +408,8 @@ class Day(models.Model):
     @property
     def get_first_day_id(self):
         '''
-        Return the PK of the first day of the week, this is used in the template
+        Return the PK of the first day of the week,
+        this is used in the template
         to order the days in the template
         '''
         return self.day.all()[0].pk
@@ -422,7 +435,8 @@ class Day(models.Model):
         '''
         Return the canonical representation for this day
 
-        This is extracted from the workout representation because that one is cached
+        This is extracted from the workout
+        representation because that one is cached
         and this isn't.
         '''
         for i in self.training.canonical_representation['day_list']:
@@ -458,12 +472,16 @@ class Day(models.Model):
                     elif not muscle.is_front and muscle.id not in muscles_back:
                         muscles_back_secondary.append(muscle.id)
 
-                for setting in Setting.objects.filter(set=set_obj,
-                                                      exercise=exercise).order_by('order', 'id'):
+                for setting in Setting.objects.filter(
+                        set=set_obj,
+                        exercise=exercise).order_by(
+                        'order',
+                        'id'):
                     setting_tmp.append(setting)
 
                 # "Smart" textual representation
-                setting_text, setting_list, weight_list, reps_list, repetition_units, weight_units \
+                setting_text, setting_list, weight_list, \
+                    reps_list, repetition_units, weight_units \
                     = reps_smart_text(setting_tmp, set_obj)
 
                 # Flag indicating whether all exercises have settings
@@ -492,9 +510,10 @@ class Day(models.Model):
                                      'setting_text': setting_text,
                                      'comment_list': comment_list})
 
-            # If it's a superset, check that all exercises have the same repetitions.
-            # If not, just take the smallest number and drop the rest, because otherwise
-            # it doesn't make sense
+            # If it's a superset, check that all exercises
+            # have the same repetitions.
+            # If not, just take the smallest number
+            # and drop the rest, because otherwise it doesn't make sense
             if len(exercise_tmp) > 1:
                 common_reps = 100
                 for exercise in exercise_tmp:
@@ -507,20 +526,22 @@ class Day(models.Model):
                         exercise['setting_obj_list'].pop(-1)
                         setting_text, setting_list, weight_list,\
                             reps_list, repetition_units, weight_units = \
-                            reps_smart_text(exercise['setting_obj_list'], set_obj)
+                            reps_smart_text(
+                                exercise['setting_obj_list'], set_obj)
                         exercise['setting_text'] = setting_text
                         exercise['repetition_units'] = repetition_units
 
-            canonical_repr.append({'obj': set_obj,
-                                   'exercise_list': exercise_tmp,
-                                   'is_superset': True if len(exercise_tmp) > 1 else False,
-                                   'has_settings': has_setting_tmp,
-                                   'muscles': {
-                                       'back': muscles_back,
-                                       'front': muscles_front,
-                                       'frontsecondary': muscles_front_secondary,
-                                       'backsecondary': muscles_front_secondary
-                                   }})
+            canonical_repr.append(
+                {'obj': set_obj,
+                 'exercise_list': exercise_tmp,
+                 'is_superset': True if len(exercise_tmp) > 1 else False,
+                 'has_settings': has_setting_tmp,
+                 'muscles': {
+                   'back': muscles_back,
+                   'front': muscles_front,
+                   'frontsecondary': muscles_front_secondary,
+                   'backsecondary': muscles_front_secondary
+                 }})
 
         # Days of the week
         tmp_days_of_week = []
@@ -530,7 +551,7 @@ class Day(models.Model):
         return {'obj': self,
                 'days_of_week': {
                     'text': u', '.join([six.text_type(_(i.day_of_week))
-                                       for i in tmp_days_of_week]),
+                                        for i in tmp_days_of_week]),
                     'day_list': tmp_days_of_week},
                 'muscles': {
                     'back': muscles_back,
@@ -556,9 +577,12 @@ class Set(models.Model):
     order = models.IntegerField(blank=True,
                                 null=True,
                                 verbose_name=_('Order'))
-    sets = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(MAX_SETS)],
-                               verbose_name=_('Number of sets'),
-                               default=DEFAULT_SETS)
+    sets = models.IntegerField(
+        validators=[
+            MinValueValidator(0),
+            MaxValueValidator(MAX_SETS)],
+        verbose_name=_('Number of sets'),
+        default=DEFAULT_SETS)
 
     # Metaclass to set some other properties
     class Meta:
@@ -609,21 +633,28 @@ class Setting(models.Model):
     The repetition unit of a set. This can be e.g. a repetition, a minute, etc.
     '''
 
-    reps = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(600)],
-                               verbose_name=_('Amount'))
+    reps = models.IntegerField(
+        validators=[
+            MinValueValidator(0),
+            MaxValueValidator(600)],
+        verbose_name=_('Amount'))
     '''
     Amount of repetitions, minutes, etc. for a set.
 
-    Note that since adding the unit field, the name is no longer correct, but is
+    Note that since adding the unit field, the name is
+    no longer correct, but is
     kept for compatibility reasons (specially for the REST API).
     '''
 
-    weight = models.DecimalField(verbose_name=_('Weight'),
-                                 max_digits=6,
-                                 decimal_places=2,
-                                 blank=True,
-                                 null=True,
-                                 validators=[MinValueValidator(0), MaxValueValidator(1500)])
+    weight = models.DecimalField(
+        verbose_name=_('Weight'),
+        max_digits=6,
+        decimal_places=2,
+        blank=True,
+        null=True,
+        validators=[
+            MinValueValidator(0),
+            MaxValueValidator(1500)])
     '''Planed weight for the repetitions'''
 
     weight_unit = models.ForeignKey(WeightUnit,
@@ -647,7 +678,8 @@ class Setting(models.Model):
         '''
         Return a more human-readable representation
         '''
-        return u"settings for exercise {0} in set {1}".format(self.exercise.id, self.set.id)
+        return u"settings for exercise {0} in set {1}".format(
+            self.exercise.id, self.set.id)
 
     def save(self, *args, **kwargs):
         '''
@@ -702,8 +734,8 @@ class WorkoutLog(models.Model):
     '''
     Amount of repetitions, minutes, etc.
 
-    Note that since adding the unit field, the name is no longer correct, but is
-    kept for compatibility reasons (specially for the REST API).
+    Note that since adding the unit field, the name is no longer correct,
+    but is kept for compatibility reasons (specially for the REST API).
     '''
 
     weight = models.DecimalField(decimal_places=2,
@@ -756,7 +788,11 @@ class WorkoutLog(models.Model):
         '''
         Reset cache
         '''
-        reset_workout_log(self.user_id, self.date.year, self.date.month, self.date.day)
+        reset_workout_log(
+            self.user_id,
+            self.date.year,
+            self.date.month,
+            self.date.day)
 
         # If the user selected "Until Failure", do only 1 "repetition",
         # everythin else doesn't make sense.
@@ -768,7 +804,11 @@ class WorkoutLog(models.Model):
         '''
         Reset cache
         '''
-        reset_workout_log(self.user_id, self.date.year, self.date.month, self.date.day)
+        reset_workout_log(
+            self.user_id,
+            self.date.year,
+            self.date.month,
+            self.date.day)
         super(WorkoutLog, self).delete(*args, **kwargs)
 
 
@@ -808,21 +848,25 @@ class WorkoutSession(models.Model):
     The date the workout session was performed
     '''
 
-    notes = models.TextField(verbose_name=_('Notes'),
-                             null=True,
-                             blank=True,
-                             help_text=_('Any notes you might want to save about this workout '
-                                         'session.'))
+    notes = models.TextField(
+        verbose_name=_('Notes'),
+        null=True,
+        blank=True,
+        help_text=_(
+            'Any notes you might want to save about this workout '
+            'session.'))
     '''
     User notes about the workout
     '''
 
-    impression = models.CharField(verbose_name=_('General impression'),
-                                  max_length=2,
-                                  choices=IMPRESSION,
-                                  default=IMPRESSION_NEUTRAL,
-                                  help_text=_('Your impression about this workout session. '
-                                              'Did you exercise as well as you could?'))
+    impression = models.CharField(
+        verbose_name=_('General impression'),
+        max_length=2,
+        choices=IMPRESSION,
+        default=IMPRESSION_NEUTRAL,
+        help_text=_(
+            'Your impression about this workout session. '
+            'Did you exercise as well as you could?'))
     '''
     The user's general impression of workout
     '''
@@ -859,11 +903,16 @@ class WorkoutSession(models.Model):
         Perform some additional validations
         '''
 
-        if (not self.time_end and self.time_start) or (self.time_end and not self.time_start):
-            raise ValidationError(_("If you enter a time, you must enter both start and end time."))
+        if (not self.time_end and self.time_start) or (
+                self.time_end and not self.time_start):
+            raise ValidationError(
+                _("If you enter a time, ",
+                  "you must enter both start and end time."))
 
-        if self.time_end and self.time_start and self.time_start > self.time_end:
-            raise ValidationError(_("The start time cannot be after the end time."))
+        if self.time_end and self.time_start and \
+                self.time_start > self.time_end:
+            raise ValidationError(
+                _("The start time cannot be after the end time."))
 
     def get_owner_object(self):
         '''

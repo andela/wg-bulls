@@ -27,7 +27,6 @@ For a full list of options, visit:
 import os
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
-
 #
 # Application definition
 #
@@ -113,7 +112,8 @@ MIDDLEWARE_CLASSES = (
     # Javascript Header. Sends helper headers for AJAX
     'wger.utils.middleware.JavascriptAJAXRedirectionMiddleware',
 
-    # Custom authentication middleware. Creates users on-the-fly for certain paths
+    # Custom authentication middleware. Creates users on-the-fly for certain
+    # paths
     'wger.utils.middleware.WgerAuthenticationMiddleware',
 
     # Send an appropriate Header so search engines don't index pages
@@ -333,7 +333,8 @@ else:
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': ('wger.utils.permissions.WgerPermission',),
     'PAGINATE_BY': 20,
-    'PAGINATE_BY_PARAM': 'limit',  # Allow client to override, using `?limit=xxx`.
+    # Allow client to override, using `?limit=xxx`.
+    'PAGINATE_BY_PARAM': 'limit',
     'TEST_REQUEST_DEFAULT_FORMAT': 'json',
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.SessionAuthentication',
@@ -368,5 +369,7 @@ WGER_SETTINGS = {
     'ALLOW_REGISTRATION': True,
     'ALLOW_GUEST_USERS': True,
     'EMAIL_FROM': 'wger Workout Manager <wger@example.com>',
-    'TWITTER': False
+    'TWITTER': False,
+    'FITBIT_CLIENT_ID': True,
+    'FITBIT_CLIENT_SECRET': True
 }
