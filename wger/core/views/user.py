@@ -639,7 +639,7 @@ def add_fitbit_support(request, code=None):
                     template_data['fitbit_auth_link'] = fitbit_client.authorize_token_url(
                         redirect_uri='https://wg-bulls.herokuapp.com/en/dashboard',
                         prompt='consent')[0]
-                    # return render(request, 'user/fitbit_support.html', template_data)
+                    return render(request, 'user/fitbit_support.html', template_data)
 
             else:
                 today = date.today()
@@ -682,7 +682,7 @@ def add_fitbit_support(request, code=None):
                 except IntegrityError as error:
                     if error:
                         messages.info(request, _('Already synced up for today.'))
-                # return render(request, 'user/fitbit_support.html', template_data)
+                return render(request, 'user/fitbit_support.html', template_data)
 
                 try:
                     for food in response_nutrition.json()['foods']:
