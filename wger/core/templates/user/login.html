@@ -14,6 +14,10 @@
     {% trans 'Login' as submit_text %}
     {% render_form_fields form submit_text %}
 </form>
+<br>
+<a class="btn my-icon" style="background:#3B5998; color: white; margin-left: 194px; font-size: 13px; width:24.3%;" href="{% url 'social:begin' 'facebook' %}?next={{ request.GET.next }}"><span class="fa fa-facebook"></span> Sign in with Facebook</a>
+<a class="btn" style="background:#55ACEE; color: white; font-size: 13px; width:24.3%;" href="{% url 'social:begin' 'twitter' %}?next={{ request.GET.next }}"><span class="fa fa-twitter"></span> Sign in with Twitter</a>
+<a class="btn" style="background:#DD4B39; color: white; font-size: 13px; width:24.3%;" href="{% url 'social:begin' 'google-oauth2' %}?next={{ request.GET.next }}"><span class="fa fa-google"></span> Sign in with Google</a>
 {% endblock %}
 
 

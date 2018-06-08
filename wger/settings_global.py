@@ -69,6 +69,9 @@ INSTALLED_APPS = (
     # thumbnails
     'easy_thumbnails',
 
+    # Django-social-auth
+    'social_django',
+
     # CSS/JS compressor
     'compressor',
 
@@ -123,6 +126,9 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.locale.LocaleMiddleware',
 
+    # Django social-auth middleware
+    'social_django.middleware.SocialAuthExceptionMiddleware',
+
     # Django mobile
     'django_mobile.middleware.MobileDetectionMiddleware',
     'django_mobile.middleware.SetFlavourMiddleware',
@@ -130,7 +136,14 @@ MIDDLEWARE_CLASSES = (
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
-    'wger.utils.helpers.EmailAuthBackend'
+    'wger.utils.helpers.EmailAuthBackend',
+
+    # Social-auth backends
+    'social_core.backends.twitter.TwitterOAuth',
+    'social_core.backends.facebook.FacebookOAuth2',
+    'social_core.backends.open_id.OpenIdAuth',
+    'social_core.backends.google.GoogleOpenId',
+    'social_core.backends.google.GoogleOAuth2',
 )
 
 TEMPLATES = [
@@ -149,6 +162,10 @@ TEMPLATES = [
                 'django.template.context_processors.static',
                 'django.template.context_processors.tz',
                 'django.contrib.messages.context_processors.messages',
+
+                # Django social-auth
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect',
 
                 # Django mobile
                 'django_mobile.context_processors.flavour',
@@ -185,6 +202,7 @@ STATICFILES_FINDERS = (
 #
 # Email
 #
+
 EMAIL_SUBJECT_PREFIX = '[wger] '
 # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
@@ -195,6 +213,18 @@ EMAIL_SUBJECT_PREFIX = '[wger] '
 LOGIN_URL = '/user/login'
 LOGIN_REDIRECT_URL = '/'
 
+# Twitter social-auth settings
+
+SOCIAL_AUTH_REDIRECT_IS_HTTPS = True
+
+SOCIAL_AUTH_TWITTER_KEY = os.environ.get("SOCIAL_TWITTER_KEY")
+SOCIAL_AUTH_TWITTER_SECRET = os.environ.get("SOCIAL_TWITTER_SECRET")
+
+SOCIAL_AUTH_FACEBOOK_KEY = os.environ.get("SOCIAL_FACEBOOK_KEY")
+SOCIAL_AUTH_FACEBOOK_SECRET = os.environ.get("SOCIAL_FACEBOOK_SECRET")
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY =os.environ.get("SOCIAL_GOOGLE_KEY")
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.environ.get("SOCIAL_GOOGLE_SECRET")
 
 #
 # Internationalization
