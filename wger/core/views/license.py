@@ -16,7 +16,8 @@
 
 import logging
 
-from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
+from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy
@@ -38,7 +39,8 @@ from wger.core.models import License
 logger = logging.getLogger(__name__)
 
 
-class LicenseListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
+class LicenseListView(LoginRequiredMixin,
+                      PermissionRequiredMixin, ListView):
     '''
     Overview of all available licenses
     '''
@@ -47,7 +49,8 @@ class LicenseListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     template_name = 'license/list.html'
 
 
-class LicenseAddView(WgerFormMixin, LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+class LicenseAddView(WgerFormMixin, LoginRequiredMixin,
+                     PermissionRequiredMixin, CreateView):
     '''
     View to add a new license
     '''
@@ -60,7 +63,8 @@ class LicenseAddView(WgerFormMixin, LoginRequiredMixin, PermissionRequiredMixin,
     permission_required = 'core.add_license'
 
 
-class LicenseUpdateView(WgerFormMixin, LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+class LicenseUpdateView(WgerFormMixin, LoginRequiredMixin,
+                        PermissionRequiredMixin, UpdateView):
     '''
     View to update an existing license
     '''
@@ -74,13 +78,18 @@ class LicenseUpdateView(WgerFormMixin, LoginRequiredMixin, PermissionRequiredMix
         '''
         Send some additional data to the template
         '''
-        context = super(LicenseUpdateView, self).get_context_data(**kwargs)
-        context['form_action'] = reverse('core:license:edit', kwargs={'pk': self.object.id})
+        context = super(LicenseUpdateView, self).\
+            get_context_data(**kwargs)
+        context['form_action'] = reverse(
+            'core:license:edit', kwargs={'pk': self.object.id})
         context['title'] = _(u'Edit {0}').format(self.object)
         return context
 
 
-class LicenseDeleteView(WgerDeleteMixin, LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
+class LicenseDeleteView(WgerDeleteMixin,
+                        LoginRequiredMixin,
+                        PermissionRequiredMixin,
+                        DeleteView):
     '''
     View to delete an existing license
     '''
@@ -94,7 +103,11 @@ class LicenseDeleteView(WgerDeleteMixin, LoginRequiredMixin, PermissionRequiredM
         '''
         Send some additional data to the template
         '''
-        context = super(LicenseDeleteView, self).get_context_data(**kwargs)
-        context['title'] = _(u'Delete {0}?').format(self.object)
-        context['form_action'] = reverse('core:license:delete', kwargs={'pk': self.kwargs['pk']})
+        context = super(LicenseDeleteView, self).\
+            get_context_data(**kwargs)
+        context['title'] = _(u'Delete {0}?').format(
+            self.object)
+        context['form_action'] = reverse(
+            'core:license:delete', kwargs={
+                'pk': self.kwargs['pk']})
         return context
