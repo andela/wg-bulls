@@ -31,7 +31,7 @@ class ExerciseSerializer(serializers.ModelSerializer):
     '''
     class Meta:
         model = Exercise
-        read_only_fields = ('category', 
+        fields = ('category', 
                 'creation_date', 
                 'description',
                 'language',
