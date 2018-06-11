@@ -35,6 +35,7 @@ $(document).ready(function() {
     {% if plan_pk %}
         {% render_form_field form.time %}
     {% endif %}
+    {% render_form_field form.meal_choice %}
 
     <div class="form-group {% if field.errors %}has-error{% endif %}" id="form-id_ingredient_searchfield">
         <label for="id_ingredient_searchfield" class="col-md-3 control-label">
