@@ -19,10 +19,12 @@ import logging
 from django import forms
 from django.utils.translation import ugettext as _
 from wger.core.models import UserProfile
+from wger.utils.timewidget import SelectTimeWidget
 
 from wger.nutrition.models import (
     IngredientWeightUnit,
     Ingredient,
+    Meal,
     MealItem
 )
 from wger.utils.widgets import Html5NumberInput
@@ -114,6 +116,7 @@ class DailyCaloriesForm(forms.ModelForm):
                                              required=False,
                                              widget=Html5NumberInput())
 
+
     class Meta:
         model = UserProfile
         fields = ('calories',)
@@ -125,6 +128,10 @@ class MealItemForm(forms.ModelForm):
                                          required=False)
     ingredient = forms.ModelChoiceField(queryset=Ingredient.objects.all(),
                                         widget=forms.HiddenInput)
+
+    time = forms.TimeField(required=False,
+                           label=_('Time (approx)'),
+                           widget=SelectTimeWidget(twelve_hr=True))
 
     class Meta:
         model = MealItem
