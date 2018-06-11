@@ -133,6 +133,12 @@ class MealItemForm(forms.ModelForm):
                            label=_('Time (approx)'),
                            widget=SelectTimeWidget(twelve_hr=True))
 
+    MEALCHOICE = (
+        ('Planned', 'Planned'),
+        ('Consumed', 'Consumed'),
+     )
+    meal_choice = forms.ChoiceField(label='Meal choice', widget=forms.Select, choices=MEALCHOICE)
+
     class Meta:
         model = MealItem
         fields = '__all__'
