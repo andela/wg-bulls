@@ -33,4 +33,30 @@
 <a href="{% url 'manager:workout:add' %}" class="btn btn-success btn-sm">
     {% trans "Add workout" %}
 </a>
+<div class="modal fade" id="export_workout">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">{% trans "Import Workout" %}</h4>
+                </div>
+            <div class="modal-body">
+                <form action="{% url 'manager:workout:export_workouts' %}" method="post" enctype="multipart/form-data">{% csrf_token %}
+                    <h5>
+                        <strong>{% trans "Import from CSV file" %}:</strong>
+                    </h5>
+                    <p>
+                        <input type="file" name="csv_file" />
+                    </p>
+                    <input type="submit" value="Import" class="btn btn-success btn-sm" />  </form>
+                 </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">{% trans "Close" %}</button>
+                 </div>
+             </div>
+         </div>
+</div>
+<a data-toggle="modal" data-target="#export_workout" class="btn btn-default btn-sm">
+     {% trans "Import Workouts" %}
+</a>
 {% endblock %}

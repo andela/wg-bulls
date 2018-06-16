@@ -231,6 +231,14 @@ an appointment for each training day with the appropriate exercises.{% endblockt
                {% trans "View weight log" %}
             </a>
         </li>
+        <li>
+            <a href='{% url 'manager:workout:export_workouts' workout.id %}'>
+                <span class="{% fa_class 'download' %}"></span>
+                {% trans "Export workout" %}
+            </a>
+        </li>
+        {% if is_owner %}
+        <li>
         {% if is_owner %}
         <li>
             <a href="{% url 'manager:workout:edit' workout.id %}" class="wger-modal-dialog">
