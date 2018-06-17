@@ -112,6 +112,9 @@ patterns_workout = [
     url(r'^(?P<day_pk>\d+)/timer$',
         workout.timer,
         name='timer'),
+    url(r'^(?P<pk>\d+)/export/$', workout.export_workout,
+        name='export_workouts'),
+    url(r'^import/$', workout.import_workout, name='export_workouts'),
 ]
 
 
