@@ -239,8 +239,6 @@ an appointment for each training day with the appropriate exercises.{% endblockt
         </li>
         {% if is_owner %}
         <li>
-        {% if is_owner %}
-        <li>
             <a href="{% url 'manager:workout:edit' workout.id %}" class="wger-modal-dialog">
                <span class="{% fa_class 'pencil-square-o' %}"></span>
                {% trans "Edit workout" %}
