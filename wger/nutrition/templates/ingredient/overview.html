@@ -26,7 +26,22 @@
     </script>
 {% endblock %}
 
-{% block title %}{% trans "Ingredient overview" %}{% endblock %}
+{% block title %}{% trans "Ingredient overview" %}
+<div class="btn-group" style="float:right;">
+    <button type="button" class="btn btn-primary dropdown-toggle btn-xs" data-toggle="dropdown">
+        {% trans "Filter by language" %}
+        <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu" role="menu">
+            {% for sn, language in languages %}
+            <li>
+                <a href={% url 'nutrition:ingredient:list' %}?lang={{ sn }}> {{ language }} </a>
+            </li>
+            {% endfor %}
+    </ul>
+</div>
+
+{% endblock %}
 
 
 {% block content %}
