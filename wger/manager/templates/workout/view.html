@@ -54,7 +54,13 @@ $(document).ready(function() {
 
 {% if workout.comment %}
 <p>
-    <strong>{% trans "Goal" %}:</strong> {{workout.comment}}
+    <strong>{% trans "Description" %}:</strong> {{workout.comment}}
+</p>
+{% endif %}
+
+{% if workout.cycle%}
+<p>
+    <strong>{% trans "Cycle" %}:</strong> {{workout.cycle}} 
 </p>
 {% endif %}
 
@@ -64,18 +70,45 @@ $(document).ready(function() {
     </div>
 {% empty %}
     {% if is_owner %}
+
+    {% if "None" in workout.cycle %}
+           <p>
+               <a href="{% url 'manager:workout:edit' workout.id %}" class="wger-modal-dialog btn btn-default btn-block">
+               {% trans "Please set a cycle and optionally a comment for this workout" %}
+               </a>
+           </p>
+           {% else %}
+
         <p>
             <a href="{% url 'manager:day:add' workout.id %}" class="wger-modal-dialog btn btn-default btn-block">
-            {% trans "No days for this workout." %}
-            {% trans "Add training day" %}
+                    {% if "Microcycle" in workout.cycle  %}
+                        {% trans "No days for this workout." %}
+                        {% trans "Add training day(s)" %}
+                    {% elif "Mesocycle" in workout.cycle  %}
+                        {% trans "No weeks for this workout." %}
+                        {% trans "Add training week(s)" %}
+                    {% elif "Macrocycle" in workout.cycle  %}
+                        {% trans "No months for this workout." %}
+                        {% trans "Add training month(s)" %}
+                    {% endif %}
             </a>
         </p>
+    {% endif %}
     {% endif %}
 {% endfor %}
 
 {% if is_owner %}
 <p>
-    <a href="{% url 'manager:day:add' workout.id %}" class="wger-modal-dialog">{% trans "Add training day" %}</a>
+    <a href="{% url 'manager:day:add' workout.id %}" class="wger-modal-dialog">
+            {% if "Microcycle" in workout.cycle  %}
+                       {% trans "Add training day" %}
+                   {% elif "Mesocycle" in workout.cycle  %}
+                       {% trans "Add training week" %}
+                   {% elif "Macrocycle" in workout.cycle  %}
+                       {% trans "Add training month" %}
+            {% endif %}
+
+    </a>
     |
     <a id="exercise-comments-toggle" href="{% url 'core:user:preferences' %}">{% trans "Show/Hide exercise comments" %}</a>
 </p>
@@ -208,7 +241,7 @@ an appointment for each training day with the appropriate exercises.{% endblockt
 {% endblock %}
 
 
-
+x
 {#         #}
 {# Options #}
 {#         #}

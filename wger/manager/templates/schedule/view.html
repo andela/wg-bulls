@@ -133,6 +133,9 @@
                 {% if active_workout == step %}
                 &nbsp;<span class="label label-info">{% trans "active" %}</span>
                 {% endif  %}
+                <span class="label label-success">
+                        {% trans step.workout.cycle %}
+                </span>
             </td>
             <td>
                 {{ step.duration }}
@@ -188,6 +191,7 @@
                 {% if active_workout == step %}
                     <span class="label label-info">{% trans "active" %}</span>
                 {% endif  %}
+                <span class="label label-success">{% trans step.workout.cycle %}</span>
             </div>
             <div class="panel-body">
                 <span>{{step_dates.0}} <br> {{step_dates.1}}</span>
