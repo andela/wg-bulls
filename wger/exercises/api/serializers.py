@@ -31,6 +31,17 @@ class ExerciseSerializer(serializers.ModelSerializer):
     '''
     class Meta:
         model = Exercise
+        fields = ('category', 
+                'creation_date', 
+                'description',
+                'language',
+                'muscles',
+                'muscles_secondary',
+                'status',
+                'name',
+                'equipment',
+                'license',
+                'license_author')
 
 
 class EquipmentSerializer(serializers.ModelSerializer):
