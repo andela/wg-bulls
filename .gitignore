@@ -119,4 +119,7 @@ node_modules
 
 #Virtualenv folder
 venv-django/*
-/venv
+
+# Folder tracker
+*.DS_Store
+

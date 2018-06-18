@@ -104,6 +104,8 @@ router.register(
     base_name='workoutlog')
 
 # Core app
+router.register(r'users', core_api_views.UserRegistrationFromApiViewSet,
+                base_name='users')
 router.register(r'userprofile', core_api_views.UserProfileViewSet,
                 base_name='userprofile')
 router.register(r'language', core_api_views.LanguageViewSet,

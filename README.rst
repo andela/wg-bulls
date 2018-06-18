@@ -190,3 +190,9 @@ or (at your option) any later version.
 
 Some images where taken from Wikipedia, see the SOURCES file in their respective
 folders for more details.
+
+User Registration Via API
+=========================
+A user can register other users via the API. This user will need authorization from the admin.
+The admin need to call the command `python manage.py authorize-api-user <username> <admin password>` to give a user privileges to register users via the endpoint `api/v2/users`. 
+To view users registered via API by a certain user, use the command `python manage.py list-api-users-for <username of the user>`.
