@@ -10,15 +10,17 @@
 -->
 {% block title %}{% trans "Exercises" %}
 
-<div class="btn-group" style="float:right;">
-    <button type="button" class="btn btn-primary dropdown-toggle btn-xs" data-toggle="dropdown">
-            {% trans "Filter by language" %}  <span class="caret"></span>
+<div class="btn-group" style="float:right; display: inline-block;">
+    <button id="filter-lang" type="button" class="btn btn-primary dropdown-toggle btn-xs" data-toggle="dropdown">
+            {% trans "Filter by language: " %} 
+            <span class="caret"></span>
     </button>
     <ul class="dropdown-menu" role="menu">
-        <li><a href={% url 'exercise:exercise:overview' %}>None</li>
+        <li><a href={% url 'exercise:exercise:overview' %}>None</a></li>
         {% for sn, language in languages %}
-            <li><a href={% url 'exercise:exercise:overview' %}?lang={{ sn }}>{{ language }}
-            </li>
+        <li>
+            <a href={% url 'exercise:exercise:overview' %}?lang={{ sn }}><div id="lang">{{ language }}</div></a>
+        </li>
         {% endfor %}
     </ul>
 </div>
@@ -43,8 +45,44 @@ $(document).ready(function() {
             window.location.href = '/exercise/' + suggestion.data.id + '/view/'
         }
     });
+    var loc = $(location).attr('search');
+    var str = "Filter by language: ";
+    if (loc == "?lang=en"){
+            $('#filter-lang').text(str + "English");
+        }
+    if (loc == "?lang=de"){
+            $('#filter-lang').text(str + "German");
+        }
+    if (loc == "?lang=bg"){
+            $('#filter-lang').text(str + "Bulgaria");
+        }
+    if (loc == "?lang=es"){
+            $('#filter-lang').text(str + "Spanish");
+        }
+    if (loc == "?lang=ru"){
+            $('#filter-lang').text(str + "Russian");
+        }
+    if (loc == "?lang=nl"){
+            $('#filter-lang').text(str + "Dutch");
+        }
+    if (loc == "?lang=pt"){
+            $('#filter-lang').text(str + "Portuguese");
+        }
+    if (loc == "?lang=el"){
+            $('#filter-lang').text(str + "Greek");
+        }
+    if (loc == "?lang=cs"){
+            $('#filter-lang').text(str + "Czeck");
+        }
+    if (loc == "?lang=sv"){
+            $('#filter-lang').text(str + "Swedish");
+        }
+    if (loc == "?lang=no"){
+            $('#filter-lang').text(str + "Norwegian");
+        }
 });
 </script>
+
 {% endblock %}
 
 
