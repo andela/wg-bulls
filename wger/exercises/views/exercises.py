@@ -51,14 +51,14 @@ from wger.utils.generic_views import (
     WgerFormMixin,
     WgerDeleteMixin
 )
-from wger.utils.language import load_language, load_item_languages
+from wger.utils.language import load_language
 from wger.utils.cache import cache_mapper
 from wger.utils.widgets import (
     TranslatedSelect,
     TranslatedSelectMultiple,
     TranslatedOriginalSelectMultiple
 )
-from wger.config.models import LanguageConfig
+from wger.core.models import Language
 from wger.weight.helpers import process_log_entries
 
 
@@ -79,10 +79,20 @@ class ExerciseListView(ListView):
         Filter to only active exercises in
         the configured languages
         '''
-        languages = load_item_languages(
-            LanguageConfig.SHOW_ITEM_EXERCISES)
+        query_language = self.request.GET.get('lang', None)
+        language = None
+
+        if query_language:
+            ln = Language.objects.filter(short_name=query_language)
+            if ln.exists():
+                language = ln.first().id
+        if language:
+            return Exercise.objects.accepted() \
+                .filter(language=language) \
+                .order_by('category__id') \
+                .select_related()
+
         return Exercise.objects.accepted() \
-            .filter(language__in=languages) \
             .order_by('category__id') \
             .select_related()
 
