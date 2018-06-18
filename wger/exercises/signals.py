@@ -22,10 +22,12 @@ from django.core.cache import cache
 from easy_thumbnails.files import get_thumbnailer
 from easy_thumbnails.signal_handlers import generate_aliases
 from easy_thumbnails.signals import saved_file
+
 from wger.exercises.models import ExerciseImage, Muscle
 
+
 @receiver(post_delete, sender=Muscle)
-def reset_cache_on_delete_muscle(sender, instance, **kwargs):
+def reset_cache_on_muscle_delete(sender, instance, **kwargs):
     '''
     Resets the cache after muscle is deleted.
     '''
