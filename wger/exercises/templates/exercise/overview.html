@@ -8,7 +8,22 @@
 <!--
         Title
 -->
-{% block title %}{% trans "Exercises" %}{% endblock %}
+{% block title %}{% trans "Exercises" %}
+
+<div class="btn-group" style="float:right;">
+    <button type="button" class="btn btn-primary dropdown-toggle btn-xs" data-toggle="dropdown">
+            {% trans "Filter by language" %}  <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu" role="menu">
+        <li><a href={% url 'exercise:exercise:overview' %}>None</li>
+        {% for sn, language in languages %}
+            <li><a href={% url 'exercise:exercise:overview' %}?lang={{ sn }}>{{ language }}
+            </li>
+        {% endfor %}
+    </ul>
+</div>
+
+{% endblock %}
 
 
 
@@ -38,7 +53,7 @@ $(document).ready(function() {
 -->
 {% block content %}
 
-{% cache cache_timeout exercise-overview language.id %}
+{% cache 1 exercise-overview language.id %}
 {% regroup exercises by category as exercise_list %}
 <ul class="nav nav-tabs">
     {% for item in exercise_list %}
