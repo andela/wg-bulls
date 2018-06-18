@@ -31,7 +31,7 @@ def reset_cache_on_delete_muscle(sender, instance, **kwargs):
     '''
     Resets the cache after muscle is deleted.
     '''
-    cache.clear(
+    cache.clear()
 
 
 @receiver(post_delete, sender=ExerciseImage)
